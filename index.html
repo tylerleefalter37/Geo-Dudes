@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Geo Dudes: Field Dossier &amp; Mineral Ledger (STRATA &amp; STONE)</title>
+  <title>Geo Dudes: Field Dossier &amp; Mineral Ledger</title>
   
-  <!-- Tailwind CSS -->
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   
   <!-- Archival Typography: Cormorant Garamond, Space Grotesk, Space Mono -->
@@ -42,6 +42,7 @@
             },
             archival: {
               red: '#881337',
+              wax: '#781c1c',
               seal: '#1a1a1a',
               bronze: '#3f3830'
             }
@@ -79,20 +80,13 @@
     .stamp-certified {
       border-color: #881337;
       color: #881337;
-      background-color: rgba(136, 19, 55, 0.05);
+      background-color: rgba(136, 19, 55, 0.06);
     }
 
     .paper-card {
       background: #fbf9f5;
       border: 1.5px solid #dfd7c5;
       box-shadow: 2px 2px 0px rgba(10, 10, 10, 0.08);
-    }
-    
-    .paper-card-dark {
-      background: #141414;
-      color: #fbf9f5;
-      border: 1.5px solid #2b2b2b;
-      box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.4);
     }
 
     .tab-btn.active {
@@ -112,7 +106,7 @@
       justify-content: center;
       cursor: pointer;
       user-select: none;
-      transition: all 0.15s ease-in-out;
+      transition: all 0.12s ease-in-out;
       position: relative;
       overflow: hidden;
     }
@@ -129,6 +123,10 @@
     .strata-cell.revealed.strike-gem {
       border: 1.5px solid #0a0a0a;
       background-color: #f5f2eb;
+    }
+    .strata-cell.unmined-remnant {
+      background-color: #e5dfd2;
+      border: 1px dashed #737373;
     }
 
     /* Custom Ledger Scrollbar */
@@ -151,9 +149,9 @@
         <div>
           <div class="flex items-center space-x-2">
             <h1 class="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-ink-950 uppercase leading-none">Geo Dudes</h1>
-            <span class="stamp-badge border-ink-950 text-ink-950 bg-parchment-100">Curatorial Dossier Vol. V</span>
+            <span class="stamp-badge border-ink-950 text-ink-950 bg-parchment-100">Curatorial Ledger Vol. VI</span>
           </div>
-          <p class="text-[11px] font-mono uppercase tracking-widest text-ink-500 mt-0.5">Strata &amp; Stone &middot; Field Mineralogist &amp; 4-Podium Exchange</p>
+          <p class="text-[11px] font-mono uppercase tracking-widest text-ink-500 mt-0.5">Field Mineralogist &middot; Archival Dossier &middot; 4-Podium Exchange</p>
         </div>
       </div>
 
@@ -212,16 +210,16 @@
   <!-- ================= MAIN VIEWPORT CONTAINER ================= -->
   <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
 
-    <!-- 1. FIELD PROSPECTING (8x8 1-TAP STRATA GRID & LOGS) -->
+    <!-- 1. FIELD PROSPECTING (8x8 GRID & 50-PICK EXPEDITION QUOTA) -->
     <section id="panel-prospecting" class="tab-panel space-y-6">
       
-      <!-- Locality Controls -->
+      <!-- Sector Header & Controls -->
       <div class="paper-card p-6 border-2 border-ink-950">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
             <div class="flex items-center space-x-2">
               <span class="stamp-badge border-ink-950 text-ink-950">Geological Survey Sector</span>
-              <span class="text-xs font-mono text-ink-500 uppercase tracking-widest" id="site-tier-badge">Igneous Intrusion &middot; Kimberlite Diatreme</span>
+              <span class="text-xs font-mono text-ink-500 uppercase tracking-widest" id="site-tier-badge">Mantle Xenolith &middot; Diatreme Pipe</span>
             </div>
             <h2 id="site-title" class="font-serif text-3xl sm:text-4xl font-bold text-ink-950 mt-1">Kimberley Diamond Pipe, South Africa</h2>
             <p id="site-desc" class="text-sm text-ink-700 font-serif italic mt-1 max-w-3xl">
@@ -230,7 +228,7 @@
           </div>
 
           <div class="flex flex-col gap-1 w-full lg:w-80 font-mono">
-            <label class="text-[10px] uppercase tracking-widest text-ink-500">Select Prospecting Locality:</label>
+            <label class="text-[10px] uppercase tracking-widest text-ink-500">Select Prospecting Sector:</label>
             <select id="select-site" onchange="changeSite(this.value)" class="bg-parchment-100 border-2 border-ink-950 text-ink-950 text-xs p-2.5 font-mono focus:outline-none">
               <option value="kimberley">1. Kimberley Diamond Pipe, South Africa (Diamonds, Mantle Xenoliths)</option>
               <option value="mogok">2. Mogok Stone Tract, Myanmar (Pigeon's Blood Ruby, Painite, Spinel)</option>
@@ -246,17 +244,23 @@
           </div>
         </div>
 
-        <div class="mt-5 pt-4 border-t border-parchment-300 flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
+        <!-- 50-PICK EXPEDITION QUOTA STRIP -->
+        <div class="mt-5 pt-4 border-t-2 border-ink-950 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 text-xs font-mono bg-parchment-100 p-3.5 border border-parchment-300">
           <div class="flex items-center space-x-3">
-            <button onclick="resetStrataGrid()" class="px-4 py-2 border-2 border-ink-950 bg-parchment-100 hover:bg-parchment-200 text-ink-950 font-bold uppercase transition">
-              &circlearrowright; Survey New 8&times;8 Strata Section
-            </button>
-            <button onclick="expeditionBlast()" class="px-4 py-2 border border-ink-950 bg-ink-950 text-parchment-25 font-bold uppercase hover:bg-ink-800 transition">
-              Dynamite Trenches (Clear 8 Cells &middot; $350)
-            </button>
+            <span class="text-ink-500 uppercase text-[11px] tracking-wider font-semibold">EXPEDITION PICKS REMAINING:</span>
+            <div class="px-3 py-1 bg-ink-950 text-parchment-25 font-bold text-sm tracking-widest border border-ink-950" id="pick-counter-badge">
+              [ 50 / 50 PICKS ]
+            </div>
+            <span class="text-[11px] text-ink-500 hidden md:inline">&bull; 14 mystery veins must remain unmined per sector</span>
           </div>
-          <div class="text-ink-500">
-            Grid Status: <span id="strata-remaining-count" class="font-bold text-ink-950">64</span> unexcavated strata blocks.
+
+          <div class="flex items-center space-x-2">
+            <button onclick="surveyNewQuadrant()" class="px-3.5 py-1.5 border-2 border-ink-950 bg-parchment-50 hover:bg-parchment-200 text-ink-950 font-bold uppercase transition">
+              &circlearrowright; Survey New Quadrant (50 Picks)
+            </button>
+            <button onclick="expeditionBlast()" class="px-3.5 py-1.5 border border-ink-950 bg-ink-950 text-parchment-25 font-bold uppercase hover:bg-ink-800 transition" title="Blast 8 remaining tiles without using picks">
+              Field Dynamite ($500)
+            </button>
           </div>
         </div>
       </div>
@@ -264,24 +268,24 @@
       <!-- Excavation Grid & Field Wire -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
-        <!-- 8x8 Interactive Click Grid -->
+        <!-- 8x8 Interactive Click Grid (64 Tiles) -->
         <div class="lg:col-span-7 paper-card p-5 border-2 border-ink-950">
           <div class="flex items-center justify-between pb-3 border-b border-parchment-300 font-mono text-xs">
             <div class="flex items-center space-x-2">
-              <span class="stamp-badge border-ink-950 text-ink-950">Active Trench Grid</span>
-              <span class="text-ink-500 uppercase text-[10px]">Tap any strata square to harvest</span>
+              <span class="stamp-badge border-ink-950 text-ink-950">Quadrant Strata Matrix</span>
+              <span class="text-ink-500 uppercase text-[10px]">8&times;8 Grid &middot; Tap to mine</span>
             </div>
-            <span class="text-[10px] text-ink-500 uppercase">8&times;8 Lithic Matrix</span>
+            <span id="grid-status-label" class="text-[11px] font-bold text-ink-950">50 Picks Left</span>
           </div>
 
           <!-- The 8x8 Grid Container -->
-          <div id="strata-grid-container" class="mt-4 grid grid-cols-8 gap-1.5 p-2 bg-parchment-200 border-2 border-ink-950 shadow-inner">
-            <!-- Populated via script -->
+          <div id="strata-grid-container" class="mt-4 grid grid-cols-8 gap-1.5 p-2.5 bg-parchment-200 border-2 border-ink-950 shadow-inner">
+            <!-- 64 cells generated via script -->
           </div>
 
           <div class="mt-3 flex items-center justify-between text-[11px] font-mono text-ink-500">
             <span>&bull; Single-click excavation trigger</span>
-            <span>Uncovers mineral crystals, native metals, meteorites, or geodes</span>
+            <span id="strata-unmined-note">14 veins will remain unexcavated when quota ends.</span>
           </div>
         </div>
 
@@ -289,19 +293,19 @@
         <div class="lg:col-span-5 paper-card p-5 border-2 border-ink-950 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between pb-3 border-b border-parchment-300 font-mono text-xs">
-              <span class="font-bold uppercase tracking-wider text-ink-950">Chronological Field Wire</span>
+              <span class="font-bold uppercase tracking-wider text-ink-950">Archival Field Wire</span>
               <span class="stamp-badge border-ink-950 text-ink-950">Live Telegraph</span>
             </div>
 
             <div id="field-dispatch-feed" class="mt-3 space-y-2.5 max-h-[460px] overflow-y-auto pr-1 text-xs font-mono">
               <div class="p-2.5 bg-parchment-100 border border-parchment-300 text-ink-700 leading-relaxed">
-                [EXPEDITION COMMENCED] Equipment calibrated. 8x8 strata surveyed. Tap any bedrock square on the grid to extract minerals.
+                [SURVEY LOG] Expedition started. 50 excavation picks issued for this 8x8 quadrant. Tap strata blocks to strike gems, geodes, or native metals.
               </div>
             </div>
           </div>
 
           <div class="pt-3 border-t border-parchment-300 flex items-center justify-between font-mono text-xs">
-            <span class="text-ink-500">Latest Recovery:</span>
+            <span class="text-ink-500">Latest Extraction:</span>
             <button onclick="switchTab('dossier')" id="btn-view-latest-dossier" class="font-bold text-ink-950 hover:underline" disabled>
               Awaiting First Strike &rarr;
             </button>
@@ -340,7 +344,7 @@
               <span id="dossier-accession" class="font-mono text-xs font-bold text-ink-950 bg-parchment-200 px-2 py-0.5 border border-ink-950">ACCESSION #GD-9041-DM</span>
               <span id="dossier-status-badge" class="stamp-badge stamp-certified">[COA CERTIFIED #CMA-2026-9041]</span>
               <span id="dossier-grade-badge" class="stamp-badge border-ink-950 text-ink-950">[G10 PEABODY MUSEUM GRADE]</span>
-              <span id="dossier-class-badge" class="stamp-badge border-ink-950 text-ink-950 bg-parchment-100">PREVIOUS GEMSTONE</span>
+              <span id="dossier-class-badge" class="stamp-badge border-ink-950 text-ink-950 bg-parchment-100">PRECIOUS GEMSTONE</span>
             </div>
             <h1 id="dossier-title" class="font-serif text-3xl sm:text-5xl font-bold text-ink-950 tracking-tight">Kimberlite Octahedral Diamond</h1>
             <p id="dossier-subtitle" class="font-serif text-lg italic text-ink-700 mt-1">Kimberley Diatreme Pipe, Northern Cape, South Africa</p>
@@ -408,7 +412,7 @@
         <!-- Multi-Paragraph Scientific Curatorial Sections -->
         <div class="py-6 border-b border-parchment-300 space-y-6">
           
-          <!-- Section A: Genesis & Paragenesis -->
+          <!-- Section 1: Genesis & Paragenesis -->
           <div>
             <h4 class="font-serif text-xl font-bold text-ink-950 uppercase tracking-wide flex items-center space-x-2">
               <span>&sect; 1. Geological Genesis, Paragenesis &amp; Tectonic History</span>
@@ -418,7 +422,7 @@
             </div>
           </div>
 
-          <!-- Section B: Optical Phenomena & Curatorial Field Notes -->
+          <!-- Section 2: Optical Phenomena & Museum Lore -->
           <div>
             <h4 class="font-serif text-xl font-bold text-ink-950 uppercase tracking-wide flex items-center space-x-2">
               <span>&sect; 2. Optical Phenomena, Structural Morphology &amp; Museum Provenance</span>
@@ -428,7 +432,7 @@
             </div>
           </div>
 
-          <!-- Section C: Diagnostic Testing Logs -->
+          <!-- Section 3: Diagnostic Lab Record -->
           <div>
             <h4 class="font-mono text-xs font-bold text-ink-950 uppercase tracking-wider">Diagnostic Laboratory Test Record</h4>
             <div class="mt-2 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-mono">
@@ -467,8 +471,8 @@
           </div>
 
           <div class="flex items-center space-x-2">
-            <button onclick="openMultiPodiumConsignModal()" class="px-4 py-2 border-2 border-ink-950 bg-ink-950 text-parchment-25 font-bold hover:bg-ink-800 transition">
-              Consign to Live Podium &rarr;
+            <button onclick="openConsignModalForActive()" class="px-4 py-2 border-2 border-ink-950 bg-ink-950 text-parchment-25 font-bold hover:bg-ink-800 transition">
+              Consign to 4-Podium Exchange &rarr;
             </button>
           </div>
         </div>
@@ -490,7 +494,7 @@
             </div>
             <h2 class="font-serif text-3xl sm:text-4xl font-bold text-ink-950 mt-1">Live Multi-Podium Mineral Exchange</h2>
             <p class="text-sm font-serif italic text-ink-700 mt-1 max-w-3xl">
-              Four concurrent auction blocks running simultaneously. Consign up to 4 specimens at the exact same time. Strict anti-self bidding safeguards prevent bidding on your own consigned property while syndicates compete.
+              Four concurrent auction blocks running simultaneously. Consign your minerals with guaranteed sales (Absolute Auction) or competitive reserves. Institutional syndicates bid dynamically based on grade and COA provenance.
             </p>
           </div>
 
@@ -500,27 +504,175 @@
         </div>
       </div>
 
-      <!-- THE 4 PODIUMS GRID -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- THE 4 STATIC PODIUM CONTAINERS (SURGICALLY UPDATED) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="auction-podiums-grid">
         
-        <!-- PODIUM ALPHA -->
-        <div id="podium-card-0" class="paper-card p-5 border-2 border-ink-950 flex flex-col justify-between shadow-[3px_3px_0px_#0a0a0a]">
-          <!-- Loaded via script -->
+        <!-- PODIUM 0 (ALPHA) -->
+        <div class="paper-card p-5 border-2 border-ink-950 flex flex-col justify-between shadow-[3px_3px_0px_#0a0a0a]" id="podium-shell-0">
+          <div>
+            <div class="flex items-center justify-between pb-3 border-b-2 border-ink-950 font-mono text-xs">
+              <div class="flex items-center space-x-2">
+                <strong class="text-ink-950">Podium Alpha</strong>
+                <span id="podium-role-badge-0" class="stamp-badge border-ink-950 text-ink-950 bg-parchment-100">HOUSE BLOCK</span>
+              </div>
+              <div class="flex items-center space-x-1.5">
+                <span class="text-[10px] text-ink-500 uppercase">Closes:</span>
+                <span id="podium-timer-0" class="font-bold text-xs px-2 py-0.5 bg-ink-950 text-parchment-25 font-mono">00:20</span>
+              </div>
+            </div>
+
+            <div class="my-4">
+              <div class="flex flex-wrap items-center gap-1.5 mb-1.5" id="podium-badges-0">
+                <span class="stamp-badge border-ink-950 text-ink-950" id="podium-grade-0">[G8]</span>
+                <span class="stamp-badge stamp-certified" id="podium-coa-0">[COA CERTIFIED]</span>
+              </div>
+
+              <h3 class="font-serif text-2xl font-bold text-ink-950 leading-tight" id="podium-title-0">Kashmir Sapphire</h3>
+              <p class="text-xs font-serif italic text-ink-700 mt-0.5" id="podium-subtitle-0">Zanskar Pegmatites, Kashmir</p>
+
+              <div class="mt-3 p-3 bg-parchment-100 border border-parchment-300 font-mono text-xs flex justify-between items-center">
+                <div>
+                  <span class="text-[10px] text-ink-500 uppercase block">High Bid:</span>
+                  <span class="font-serif text-2xl font-bold text-ink-950 block" id="podium-bid-0">$14,500</span>
+                  <span class="text-[10px] block text-ink-700 truncate max-w-[170px]" id="podium-bidder-0">Peabody Curatorial Trust</span>
+                </div>
+                <div class="text-right">
+                  <span class="text-[10px] text-ink-500 uppercase block" id="podium-reserve-target-0">Reserve: $12,000</span>
+                  <span class="stamp-badge stamp-certified mt-1 inline-block" id="podium-reserve-status-0">✓ RESERVE MET</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-3 border-t-2 border-ink-950 font-mono text-xs" id="podium-action-bar-0">
+            <!-- Dynamic Controls inserted here -->
+          </div>
         </div>
 
-        <!-- PODIUM BETA -->
-        <div id="podium-card-1" class="paper-card p-5 border-2 border-ink-950 flex flex-col justify-between shadow-[3px_3px_0px_#0a0a0a]">
-          <!-- Loaded via script -->
+        <!-- PODIUM 1 (BETA) -->
+        <div class="paper-card p-5 border-2 border-ink-950 flex flex-col justify-between shadow-[3px_3px_0px_#0a0a0a]" id="podium-shell-1">
+          <div>
+            <div class="flex items-center justify-between pb-3 border-b-2 border-ink-950 font-mono text-xs">
+              <div class="flex items-center space-x-2">
+                <strong class="text-ink-950">Podium Beta</strong>
+                <span id="podium-role-badge-1" class="stamp-badge border-ink-950 text-ink-950 bg-parchment-100">HOUSE BLOCK</span>
+              </div>
+              <div class="flex items-center space-x-1.5">
+                <span class="text-[10px] text-ink-500 uppercase">Closes:</span>
+                <span id="podium-timer-1" class="font-bold text-xs px-2 py-0.5 bg-ink-950 text-parchment-25 font-mono">00:25</span>
+              </div>
+            </div>
+
+            <div class="my-4">
+              <div class="flex flex-wrap items-center gap-1.5 mb-1.5" id="podium-badges-1">
+                <span class="stamp-badge border-ink-950 text-ink-950" id="podium-grade-1">[G9]</span>
+                <span class="stamp-badge stamp-certified" id="podium-coa-1">[COA CERTIFIED]</span>
+              </div>
+
+              <h3 class="font-serif text-2xl font-bold text-ink-950 leading-tight" id="podium-title-1">Monster Gold Nugget</h3>
+              <p class="text-xs font-serif italic text-ink-700 mt-0.5" id="podium-subtitle-1">Sierra Nevada Placer, California</p>
+
+              <div class="mt-3 p-3 bg-parchment-100 border border-parchment-300 font-mono text-xs flex justify-between items-center">
+                <div>
+                  <span class="text-[10px] text-ink-500 uppercase block">High Bid:</span>
+                  <span class="font-serif text-2xl font-bold text-ink-950 block" id="podium-bid-1">$28,000</span>
+                  <span class="text-[10px] block text-ink-700 truncate max-w-[170px]" id="podium-bidder-1">Geneva Private Vault</span>
+                </div>
+                <div class="text-right">
+                  <span class="text-[10px] text-ink-500 uppercase block" id="podium-reserve-target-1">Reserve: $24,000</span>
+                  <span class="stamp-badge stamp-certified mt-1 inline-block" id="podium-reserve-status-1">✓ RESERVE MET</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-3 border-t-2 border-ink-950 font-mono text-xs" id="podium-action-bar-1">
+            <!-- Dynamic Controls inserted here -->
+          </div>
         </div>
 
-        <!-- PODIUM GAMMA -->
-        <div id="podium-card-2" class="paper-card p-5 border-2 border-ink-950 flex flex-col justify-between shadow-[3px_3px_0px_#0a0a0a]">
-          <!-- Loaded via script -->
+        <!-- PODIUM 2 (GAMMA) -->
+        <div class="paper-card p-5 border-2 border-ink-950 flex flex-col justify-between shadow-[3px_3px_0px_#0a0a0a]" id="podium-shell-2">
+          <div>
+            <div class="flex items-center justify-between pb-3 border-b-2 border-ink-950 font-mono text-xs">
+              <div class="flex items-center space-x-2">
+                <strong class="text-ink-950">Podium Gamma</strong>
+                <span id="podium-role-badge-2" class="stamp-badge border-ink-950 text-ink-950 bg-parchment-100">HOUSE BLOCK</span>
+              </div>
+              <div class="flex items-center space-x-1.5">
+                <span class="text-[10px] text-ink-500 uppercase">Closes:</span>
+                <span id="podium-timer-2" class="font-bold text-xs px-2 py-0.5 bg-ink-950 text-parchment-25 font-mono">00:18</span>
+              </div>
+            </div>
+
+            <div class="my-4">
+              <div class="flex flex-wrap items-center gap-1.5 mb-1.5" id="podium-badges-2">
+                <span class="stamp-badge border-ink-950 text-ink-950" id="podium-grade-2">[G8]</span>
+                <span class="stamp-badge border-ink-500 text-ink-500" id="podium-coa-2">[RAW]</span>
+              </div>
+
+              <h3 class="font-serif text-2xl font-bold text-ink-950 leading-tight" id="podium-title-2">Seymchan Pallasite Slab</h3>
+              <p class="text-xs font-serif italic text-ink-700 mt-0.5" id="podium-subtitle-2">Magadan Strewnfield, Siberia</p>
+
+              <div class="mt-3 p-3 bg-parchment-100 border border-parchment-300 font-mono text-xs flex justify-between items-center">
+                <div>
+                  <span class="text-[10px] text-ink-500 uppercase block">High Bid:</span>
+                  <span class="font-serif text-2xl font-bold text-ink-950 block" id="podium-bid-2">$19,500</span>
+                  <span class="text-[10px] block text-ink-700 truncate max-w-[170px]" id="podium-bidder-2">Tokyo Gemological Guild</span>
+                </div>
+                <div class="text-right">
+                  <span class="text-[10px] text-ink-500 uppercase block" id="podium-reserve-target-2">Reserve: $18,000</span>
+                  <span class="stamp-badge stamp-certified mt-1 inline-block" id="podium-reserve-status-2">✓ RESERVE MET</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-3 border-t-2 border-ink-950 font-mono text-xs" id="podium-action-bar-2">
+            <!-- Dynamic Controls inserted here -->
+          </div>
         </div>
 
-        <!-- PODIUM DELTA -->
-        <div id="podium-card-3" class="paper-card p-5 border-2 border-ink-950 flex flex-col justify-between shadow-[3px_3px_0px_#0a0a0a]">
-          <!-- Loaded via script -->
+        <!-- PODIUM 3 (DELTA) -->
+        <div class="paper-card p-5 border-2 border-ink-950 flex flex-col justify-between shadow-[3px_3px_0px_#0a0a0a]" id="podium-shell-3">
+          <div>
+            <div class="flex items-center justify-between pb-3 border-b-2 border-ink-950 font-mono text-xs">
+              <div class="flex items-center space-x-2">
+                <strong class="text-ink-950">Podium Delta</strong>
+                <span id="podium-role-badge-3" class="stamp-badge border-ink-950 text-ink-950 bg-parchment-100">HOUSE BLOCK</span>
+              </div>
+              <div class="flex items-center space-x-1.5">
+                <span class="text-[10px] text-ink-500 uppercase">Closes:</span>
+                <span id="podium-timer-3" class="font-bold text-xs px-2 py-0.5 bg-ink-950 text-parchment-25 font-mono">00:30</span>
+              </div>
+            </div>
+
+            <div class="my-4">
+              <div class="flex flex-wrap items-center gap-1.5 mb-1.5" id="podium-badges-3">
+                <span class="stamp-badge border-ink-950 text-ink-950" id="podium-grade-3">[G9]</span>
+                <span class="stamp-badge stamp-certified" id="podium-coa-3">[COA CERTIFIED]</span>
+              </div>
+
+              <h3 class="font-serif text-2xl font-bold text-ink-950 leading-tight" id="podium-title-3">Black Harlequin Opal</h3>
+              <p class="text-xs font-serif italic text-ink-700 mt-0.5" id="podium-subtitle-3">Lightning Ridge, Australia</p>
+
+              <div class="mt-3 p-3 bg-parchment-100 border border-parchment-300 font-mono text-xs flex justify-between items-center">
+                <div>
+                  <span class="text-[10px] text-ink-500 uppercase block">High Bid:</span>
+                  <span class="font-serif text-2xl font-bold text-ink-950 block" id="podium-bid-3">$22,000</span>
+                  <span class="text-[10px] block text-ink-700 truncate max-w-[170px]" id="podium-bidder-3">Munich Mineral Syndicate</span>
+                </div>
+                <div class="text-right">
+                  <span class="text-[10px] text-ink-500 uppercase block" id="podium-reserve-target-3">Reserve: $19,000</span>
+                  <span class="stamp-badge stamp-certified mt-1 inline-block" id="podium-reserve-status-3">✓ RESERVE MET</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-3 border-t-2 border-ink-950 font-mono text-xs" id="podium-action-bar-3">
+            <!-- Dynamic Controls inserted here -->
+          </div>
         </div>
 
       </div>
@@ -630,7 +782,7 @@
               <option value="Gemstone">Precious Gemstones</option>
               <option value="Native Element">Native Metals</option>
               <option value="Meteorite">Space Rocks &amp; Meteorites</option>
-              <option value="Phenomenal">Phenomenal &amp; Rare Minerals</option>
+              <option value="Phenomenal">Phenomenal Minerals</option>
               <option value="Geode">Hollow Geodes</option>
             </select>
 
@@ -722,7 +874,7 @@
           <h2 class="font-serif text-2xl font-bold text-archival-red">Developer God Mode Suite</h2>
         </div>
         <p class="text-xs font-mono text-ink-700 mt-2">
-          Test harnesses for instantaneous capital injection, synthesis of legendary museum specimens, automated provenance certification, and seismic grid clear.
+          Test harnesses for instantaneous capital injection, synthesis of legendary museum specimens, automated provenance certification, and replenishing picks.
         </p>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6 font-mono text-xs">
@@ -752,10 +904,10 @@
           </div>
 
           <div class="p-4 bg-parchment-100 border border-parchment-300 space-y-2">
-            <strong class="text-ink-950 uppercase block">4. Seismic Grid Strike</strong>
-            <p class="text-[11px] text-ink-500">Instantly detonate and excavate all 64 cells of the active strata grid at once.</p>
-            <button onclick="godClearGrid()" class="w-full py-2 border border-archival-red text-archival-red font-bold uppercase hover:bg-archival-red hover:text-parchment-25">
-              Seismic Grid Reveal
+            <strong class="text-ink-950 uppercase block">4. Replenish 50 Picks</strong>
+            <p class="text-[11px] text-ink-500">Instantly reset your expedition pick count to 50 on the current grid.</p>
+            <button onclick="godReplenishPicks()" class="w-full py-2 border border-archival-red text-archival-red font-bold uppercase hover:bg-archival-red hover:text-parchment-25">
+              Reset to 50 Picks
             </button>
           </div>
 
@@ -803,9 +955,9 @@
     </div>
   </div>
 
-  <!-- MULTI-PODIUM CONSIGNMENT MODAL -->
+  <!-- MULTI-PODIUM CONSIGNMENT MODAL (BULLETPROOF RESERVE TIERS) -->
   <div id="modal-consign" class="fixed inset-0 z-50 bg-ink-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="paper-card p-6 max-w-md w-full border-2 border-ink-950 shadow-[4px_4px_0px_#0a0a0a] bg-parchment-50 font-mono text-xs">
+    <div class="paper-card p-6 max-w-lg w-full border-2 border-ink-950 shadow-[4px_4px_0px_#0a0a0a] bg-parchment-50 font-mono text-xs">
       <div class="flex items-center justify-between pb-3 border-b border-parchment-300">
         <h3 class="font-serif text-xl font-bold text-ink-950">Consign to Exchange Block</h3>
         <button onclick="closeMultiPodiumConsignModal()" class="text-ink-500 hover:text-ink-950">[ESC]</button>
@@ -813,7 +965,7 @@
 
       <div class="my-4 space-y-3">
         <div>
-          <label class="text-ink-500 block text-[10px] uppercase mb-1">Select Consignment Podium:</label>
+          <label class="text-ink-500 block text-[10px] uppercase mb-1">Target Exchange Podium:</label>
           <select id="modal-consign-podium-idx" class="w-full bg-parchment-100 border border-ink-950 text-ink-950 p-2 font-mono">
             <option value="0">Podium Alpha</option>
             <option value="1">Podium Beta</option>
@@ -830,9 +982,19 @@
         </div>
 
         <div>
-          <label class="text-ink-500 block text-[10px] uppercase mb-1">Reserve Price ($):</label>
-          <input type="number" id="modal-consign-reserve" value="5000" min="50" step="50" class="w-full bg-parchment-100 border border-ink-950 text-ink-950 p-2 font-mono">
-          <span class="text-[10px] text-ink-500 block mt-1">Recommended: 80% of appraised value. Bidders respect reserve.</span>
+          <label class="text-ink-500 block text-[10px] uppercase mb-1">Select Reserve Strategy:</label>
+          <select id="modal-consign-strategy" onchange="onConsignStrategyChange(this.value)" class="w-full bg-parchment-100 border border-ink-950 text-ink-950 p-2 font-mono">
+            <option value="absolute">1. Absolute Auction ($0 Reserve &middot; 100% Guaranteed Sale)</option>
+            <option value="fair" selected>2. Fair Market Reserve (75% Appraised Valuation)</option>
+            <option value="curator">3. Aggressive Curator Reserve (95% Appraised Valuation)</option>
+            <option value="custom">4. Custom Specific Reserve</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-ink-500 block text-[10px] uppercase mb-1">Calculated Reserve Target ($):</label>
+          <input type="number" id="modal-consign-reserve" value="5000" min="0" step="100" class="w-full bg-parchment-100 border border-ink-950 text-ink-950 p-2 font-mono">
+          <span id="consign-reserve-hint" class="text-[10px] text-ink-500 block mt-1">Recommended: Fair market or absolute ensures bidders hit the reserve quickly.</span>
         </div>
       </div>
 
@@ -847,16 +1009,16 @@
     </div>
   </div>
 
-  <!-- Toast Notification Container -->
+  <!-- Toast Notification Shelf -->
   <div id="toast-container" class="fixed bottom-4 right-4 z-50 space-y-2 pointer-events-none"></div>
 
   <!-- ================= SCRIPT & CORE ENGINE ================= -->
   <script>
     /* ==========================================================================
-       GEO DUDES: FIELD DOSSIER & MINERAL LEDGER &middot; CURATORIAL ARCHITECTURE
+       GEO DUDES: FIELD DOSSIER & MINERAL LEDGER &middot; JAVASCRIPT ENGINE
        ========================================================================== */
 
-    // --- Audio Feedback Synthesizer ---
+    // --- Web Audio Synthesizer ---
     let audioCtx = null;
     let soundEnabled = true;
 
@@ -875,8 +1037,8 @@
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
           osc.type = 'triangle';
-          osc.frequency.setValueAtTime(140, now);
-          osc.frequency.exponentialRampToValueAtTime(35, now + 0.12);
+          osc.frequency.setValueAtTime(160, now);
+          osc.frequency.exponentialRampToValueAtTime(40, now + 0.12);
           gain.gain.setValueAtTime(0.3, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
           osc.connect(gain);
@@ -945,7 +1107,7 @@
       }, 3200);
     }
 
-    // --- EXPANDED CURATORIAL SPECIES ROSTER (28 DETAILED TAXA) ---
+    // --- CURATORIAL SPECIES ROSTER (28 DETAILED TAXA) ---
     const PEABODY_SPECIES = [
       // 1. PRECIOUS GEMSTONES
       {
@@ -1674,12 +1836,12 @@
     const AI_BIDDERS = [
       'Peabody Curatorial Trust',
       'Geneva Private Vault',
+      'Tokyo Gemological Guild',
+      'Munich Mineral Syndicate',
+      'Dubai Royal Gems',
       'Denver Lithic Syndicate',
       'Smithsonian Acquisitions',
-      'Tokyo Gemological Guild',
-      'Alpine Collector Consortium',
-      'Monaco Mineral Salon',
-      'Houston Natural Science Trust'
+      'Alpine Collector Consortium'
     ];
 
     // --- APPLICATION STATE ---
@@ -1687,16 +1849,21 @@
       funds: 35000,
       activeSector: 'kimberley',
       specimens: [],
-      unopenedGeodes: 3,
+      unopenedGeodes: 2,
       activeSpecimenId: null,
       latestMinedId: null,
+      
+      // 50-PICK EXPEDITION QUOTA
+      picksRemaining: 50,
+      maxPicks: 50,
       strataCells: [], // 64 cells
+
       // 4 SIMULTANEOUS AUCTION PODIUMS
       podiums: [
-        { id: 0, name: 'Podium Alpha', activeLot: null, currentBid: 0, highBidder: '', isPlayerSeller: false, isPlayerHighBidder: false, reserve: 0, reserveMet: false, timer: 18, intervalId: null },
-        { id: 1, name: 'Podium Beta', activeLot: null, currentBid: 0, highBidder: '', isPlayerSeller: false, isPlayerHighBidder: false, reserve: 0, reserveMet: false, timer: 24, intervalId: null },
-        { id: 2, name: 'Podium Gamma', activeLot: null, currentBid: 0, highBidder: '', isPlayerSeller: false, isPlayerHighBidder: false, reserve: 0, reserveMet: false, timer: 30, intervalId: null },
-        { id: 3, name: 'Podium Delta', activeLot: null, currentBid: 0, highBidder: '', isPlayerSeller: false, isPlayerHighBidder: false, reserve: 0, reserveMet: false, timer: 15, intervalId: null }
+        { id: 0, name: 'Podium Alpha', activeLot: null, currentBid: 0, highBidder: '', isPlayerSeller: false, isPlayerHighBidder: false, reserve: 0, reserveMet: false, timer: 18, intervalId: null, bidderCeiling: 0 },
+        { id: 1, name: 'Podium Beta', activeLot: null, currentBid: 0, highBidder: '', isPlayerSeller: false, isPlayerHighBidder: false, reserve: 0, reserveMet: false, timer: 24, intervalId: null, bidderCeiling: 0 },
+        { id: 2, name: 'Podium Gamma', activeLot: null, currentBid: 0, highBidder: '', isPlayerSeller: false, isPlayerHighBidder: false, reserve: 0, reserveMet: false, timer: 20, intervalId: null, bidderCeiling: 0 },
+        { id: 3, name: 'Podium Delta', activeLot: null, currentBid: 0, highBidder: '', isPlayerSeller: false, isPlayerHighBidder: false, reserve: 0, reserveMet: false, timer: 16, intervalId: null, bidderCeiling: 0 }
       ]
     };
 
@@ -1763,9 +1930,10 @@
       };
     }
 
-    // --- 8x8 STRATA GRID ENGINE ---
+    // --- 8x8 STRATA GRID ENGINE (50-PICK QUOTA) ---
     function initStrataGrid() {
       state.strataCells = [];
+      state.picksRemaining = state.maxPicks;
       const container = document.getElementById('strata-grid-container');
       container.innerHTML = '';
 
@@ -1780,18 +1948,27 @@
         const el = document.createElement('div');
         el.className = 'strata-cell';
         el.id = `strata-cell-${i}`;
-        el.title = `Strata Cell #${i + 1}`;
+        el.title = `Strata Block #${i + 1}`;
         el.innerHTML = `<span class="text-[9px] font-mono text-ink-500 font-bold">${i + 1}</span>`;
         el.addEventListener('click', () => onStrataCellClick(i));
         container.appendChild(el);
       }
-      updateStrataCount();
+      updatePickDisplays();
     }
 
     function onStrataCellClick(idx) {
       const cell = state.strataCells[idx];
       if (cell.revealed) return;
 
+      // 50-Pick Quota Check
+      if (state.picksRemaining <= 0) {
+        playSound('crack');
+        showToast('Quadrant survey quota reached (50/50 picks expended)! Survey a new quadrant to refresh.', 'warning');
+        logFieldDispatch(`[NOTICE] Quota reached. 14 veins remain unexcavated in this sector. Survey a new quadrant to replenish picks.`);
+        return;
+      }
+
+      state.picksRemaining--;
       cell.revealed = true;
       const el = document.getElementById(`strata-cell-${idx}`);
       el.classList.add('revealed');
@@ -1821,35 +1998,95 @@
         logFieldDispatch(`Country rock salvaged for +$${scrapVal} crushed aggregate.`);
       }
 
+      // Check if player just reached 0 picks
+      if (state.picksRemaining === 0) {
+        logFieldDispatch(`[EXPEDITION LIMIT] 50/50 picks expended! 14 unexplored veins remain unexcavated in this quadrant. You may survey a new quadrant.`);
+        showToast('Expedition pick limit reached (50/50). 14 veins remain untouched.', 'info');
+        markUnminedRemnants();
+      }
+
       updateHeaderStats();
-      updateStrataCount();
+      updatePickDisplays();
       renderSpecimenLedger();
     }
 
-    function resetStrataGrid() {
+    function markUnminedRemnants() {
+      state.strataCells.forEach(cell => {
+        if (!cell.revealed) {
+          const el = document.getElementById(`strata-cell-${cell.idx}`);
+          if (el) el.classList.add('unmined-remnant');
+        }
+      });
+    }
+
+    function surveyNewQuadrant() {
       playSound('crack');
       initStrataGrid();
-      logFieldDispatch(`--- Surveyed new 8x8 bedrock section in ${LOCALITIES[state.activeSector].title} ---`);
-      showToast('8x8 Strata Section Refreshed');
+      logFieldDispatch(`--- Surveyed new 8x8 bedrock section in ${LOCALITIES[state.activeSector].title} &middot; 50 Picks Issued ---`);
+      showToast('New Quadrant Surveyed: 50 Picks Replenished');
     }
 
     function expeditionBlast() {
-      if (state.funds < 350) {
-        showToast('Insufficient funds for Dynamite Trench ($350 needed)', 'warning');
+      if (state.funds < 500) {
+        showToast('Insufficient funds for Field Dynamite ($500 needed)', 'warning');
         return;
       }
-      state.funds -= 350;
+      state.funds -= 500;
       playSound('crack');
 
       const unrevealed = state.strataCells.filter(c => !c.revealed);
+      if (unrevealed.length === 0) {
+        showToast('All cells in this quadrant are already excavated!', 'warning');
+        return;
+      }
+
       const toClear = unrevealed.slice(0, 8);
-      toClear.forEach(c => onStrataCellClick(c.idx));
-      showToast('Dynamite Trench blast excavated 8 strata blocks!', 'info');
+      toClear.forEach(c => {
+        c.revealed = true;
+        const el = document.getElementById(`strata-cell-${c.idx}`);
+        el.classList.add('revealed');
+
+        if (c.type === 'geode') {
+          state.unopenedGeodes++;
+          el.innerHTML = `<span class="text-sm">🪨</span>`;
+          logFieldDispatch(`🧨 DYNAMITE BLAST: Blew open 1 Unopened Geode Nodule!`);
+        } else if (c.type === 'gem') {
+          const spec = generateSpecimen();
+          state.specimens.push(spec);
+          state.latestMinedId = spec.id;
+          el.classList.add('strike-gem');
+          el.innerHTML = `<span class="text-sm">💎</span>`;
+          logFieldDispatch(`🧨 DYNAMITE BLAST: Dislodged ${spec.name} (${spec.grade} &middot; $${spec.value.toLocaleString()})!`);
+        } else {
+          const scrapVal = Math.floor(Math.random() * 80 + 35);
+          state.funds += scrapVal;
+          el.innerHTML = `<span class="text-[10px] font-mono text-ink-500">+$${scrapVal}</span>`;
+        }
+      });
+
+      showToast('Field Dynamite blasted 8 strata blocks without consuming picks!', 'info');
+      updateHeaderStats();
+      updatePickDisplays();
+      renderSpecimenLedger();
     }
 
-    function updateStrataCount() {
-      const remaining = state.strataCells.filter(c => !c.revealed).length;
-      document.getElementById('strata-remaining-count').textContent = remaining;
+    function updatePickDisplays() {
+      const remaining = state.picksRemaining;
+      const counterEl = document.getElementById('pick-counter-badge');
+      if (counterEl) {
+        counterEl.textContent = `[ ${remaining} / ${state.maxPicks} PICKS ]`;
+        if (remaining === 0) {
+          counterEl.classList.add('bg-archival-red', 'text-parchment-25');
+        } else {
+          counterEl.classList.remove('bg-archival-red');
+        }
+      }
+
+      const statusLabel = document.getElementById('grid-status-label');
+      if (statusLabel) {
+        statusLabel.textContent = `${remaining} Picks Left`;
+      }
+
       const btnLatest = document.getElementById('btn-view-latest-dossier');
       if (state.latestMinedId) {
         const latest = getSpecimenById(state.latestMinedId);
@@ -1875,11 +2112,11 @@
       document.getElementById('site-title').textContent = s.title;
       document.getElementById('site-tier-badge').innerHTML = s.badge;
       document.getElementById('site-desc').textContent = s.desc;
-      resetStrataGrid();
+      surveyNewQuadrant();
       showToast(`Sector switched to ${s.title}`);
     }
 
-    // --- ACTIVE SPECIMEN ARCHIVAL DOSSIER ---
+    // --- ARCHIVAL MASTER SPECIMEN DOSSIER ---
     function getActiveSpecimen() {
       return state.specimens.find(s => s.id === state.activeSpecimenId) || state.specimens[0] || null;
     }
@@ -1969,7 +2206,7 @@
       document.getElementById('btn-dossier-coa').textContent = spec.certified ? '✓ Archival COA Issued' : '🏛️ Issue Archival COA';
     }
 
-    // Interactive Testing & Prep Bench
+    // Testing & Prep Bench Operations
     function actionDossierScratch() {
       const spec = getActiveSpecimen();
       if (!spec) return;
@@ -2041,6 +2278,12 @@
       openCmaModal(spec);
     }
 
+    function openConsignModalForActive() {
+      const spec = getActiveSpecimen();
+      if (!spec) return;
+      openMultiPodiumConsignModal(spec.id);
+    }
+
     function crackGeodeVise() {
       if (state.unopenedGeodes <= 0) {
         showToast('No unopened basalt geodes available. Prospect the strata grid to find nodules!', 'warning');
@@ -2087,76 +2330,100 @@
       document.getElementById('modal-cma-cert').classList.add('hidden');
     }
 
-    // --- MULTI-PODIUM SIMULTANEOUS LIVE AUCTION HALL (4 PODIUMS) ---
+    // --- BULLETPROOF 4-PODIUM AUCTION ENGINE (SURGICAL DOM UPDATES) ---
     function initAllPodiums() {
       state.podiums.forEach((podium, idx) => {
         if (!podium.activeLot) {
-          startNewPodiumLot(idx);
+          startPodiumLot(idx);
         }
       });
-      renderAllPodiums();
     }
 
-    function startNewPodiumLot(podiumIdx, playerSpec = null, playerReserve = null) {
-      const podium = state.podiums[podiumIdx];
+    function startPodiumLot(idx, consignedSpec = null, reserveTarget = null) {
+      const podium = state.podiums[idx];
       if (podium.intervalId) clearInterval(podium.intervalId);
 
-      const isPlayerConsignment = playerSpec !== null;
-      const lot = playerSpec || generateSpecimen(null, Math.random() < 0.5 ? 'G8' : 'G9');
-      if (!isPlayerConsignment) lot.certified = Math.random() < 0.6;
+      const isPlayer = consignedSpec !== null;
+      const lot = consignedSpec || generateSpecimen(null, Math.random() < 0.5 ? 'G8' : 'G9');
+      if (!isPlayer) lot.certified = Math.random() < 0.65;
 
-      const reserve = playerReserve || Math.round(lot.value * 0.82);
+      // Reserve calculation
+      let finalReserve = 0;
+      if (isPlayer) {
+        finalReserve = reserveTarget !== null ? reserveTarget : Math.round(lot.value * 0.75);
+      } else {
+        finalReserve = Math.round(lot.value * 0.70);
+      }
+
+      // Starting bid
+      const startingBid = finalReserve > 0 ? Math.round(finalReserve * 0.65) : Math.round(lot.value * 0.35);
+
+      // AI bidder ceiling (Institutional willingness to pay)
+      let ceilingMult = 1.15 + (Math.random() * 0.45);
+      if (lot.certified) ceilingMult += 0.40;
+      if (lot.grade === 'G10') ceilingMult += 0.60;
+      else if (lot.grade === 'G9') ceilingMult += 0.35;
+      const bidderCeiling = Math.round(lot.value * ceilingMult);
 
       podium.activeLot = lot;
-      podium.currentBid = Math.round(reserve * 0.68);
+      podium.currentBid = Math.max(startingBid, 500);
       podium.highBidder = AI_BIDDERS[Math.floor(Math.random() * AI_BIDDERS.length)];
-      podium.isPlayerSeller = isPlayerConsignment;
+      podium.isPlayerSeller = isPlayer;
       podium.isPlayerHighBidder = false;
-      podium.reserve = reserve;
-      podium.reserveMet = podium.currentBid >= reserve;
-      podium.timer = Math.floor(Math.random() * 10 + 18);
+      podium.reserve = finalReserve;
+      podium.reserveMet = podium.currentBid >= finalReserve;
+      podium.bidderCeiling = Math.max(bidderCeiling, finalReserve + 2000);
+      podium.timer = Math.floor(Math.random() * 10 + 20);
 
-      renderPodiumCard(podiumIdx);
+      renderPodiumStatic(idx);
 
-      // Start independent timer loop for this podium
+      // Independent timer loop for this podium
       podium.intervalId = setInterval(() => {
         podium.timer--;
-        updatePodiumTimerDisplay(podiumIdx);
 
-        // AI Bidding Chance (COA boosts aggression)
-        const bidChance = lot.certified ? 0.65 : 0.45;
-        if (podium.timer > 2 && Math.random() < bidChance && !podium.isPlayerHighBidder) {
-          triggerAiBidOnPodium(podiumIdx);
+        // Surgical timer update
+        const timerEl = document.getElementById(`podium-timer-${idx}`);
+        if (timerEl) {
+          timerEl.textContent = `00:${podium.timer < 10 ? '0' : ''}${podium.timer}`;
+        }
+
+        // Active AI bidding chance (rapid & responsive)
+        const bidThreshold = lot.certified ? 0.75 : 0.60;
+        if (podium.timer > 1 && Math.random() < bidThreshold && podium.currentBid < podium.bidderCeiling) {
+          stepAiBid(idx);
         }
 
         if (podium.timer <= 0) {
-          concludePodiumLot(podiumIdx);
+          concludePodiumLot(idx);
         }
       }, 1000);
     }
 
-    function triggerAiBidOnPodium(podiumIdx) {
-      const podium = state.podiums[podiumIdx];
+    function stepAiBid(idx) {
+      const podium = state.podiums[idx];
       if (!podium.activeLot) return;
 
-      const bidder = AI_BIDDERS[Math.floor(Math.random() * AI_BIDDERS.length)];
-      if (bidder === podium.highBidder) return;
+      const competitor = AI_BIDDERS[Math.floor(Math.random() * AI_BIDDERS.length)];
+      if (competitor === podium.highBidder) return;
 
-      const increment = podium.activeLot.value > 15000 ? 1500 : 500;
+      const increment = podium.activeLot.value > 20000 ? 2500 : (podium.activeLot.value > 10000 ? 1500 : 500);
       podium.currentBid += increment;
-      podium.highBidder = bidder;
+      podium.highBidder = competitor;
       podium.isPlayerHighBidder = false;
       podium.reserveMet = podium.currentBid >= podium.reserve;
 
+      // Soft-close anti-snipe
+      if (podium.timer <= 4) podium.timer += 4;
+
       playSound('strike');
-      renderPodiumCard(podiumIdx);
+      renderPodiumDynamic(idx);
     }
 
-    function playerBidOnPodium(podiumIdx, increment) {
-      const podium = state.podiums[podiumIdx];
+    function playerPlaceBid(idx, increment) {
+      const podium = state.podiums[idx];
       if (!podium.activeLot) return;
 
-      // STRICT SAFEGUARD: Cannot bid on your own consigned specimen!
+      // Strict Anti-Self Bidding
       if (podium.isPlayerSeller) {
         showToast('Auction Rule: You cannot bid on your own consigned property!', 'warning');
         return;
@@ -2164,7 +2431,7 @@
 
       const nextBid = podium.currentBid + increment;
       if (state.funds < nextBid) {
-        showToast('Insufficient funds for this bid increment!', 'warning');
+        showToast('Insufficient expedition funds for this bid increment!', 'warning');
         return;
       }
 
@@ -2172,15 +2439,36 @@
       podium.highBidder = 'YOU (Geo Dude)';
       podium.isPlayerHighBidder = true;
       podium.reserveMet = podium.currentBid >= podium.reserve;
-      podium.timer = Math.max(podium.timer, 10);
+      podium.timer = Math.max(podium.timer, 8);
 
       playSound('gavel');
       showToast(`High Bid placed on ${podium.name}: $${podium.currentBid.toLocaleString()}!`);
-      renderPodiumCard(podiumIdx);
+      renderPodiumDynamic(idx);
     }
 
-    function concludePodiumLot(podiumIdx) {
-      const podium = state.podiums[podiumIdx];
+    // Instant Consignor Sell Action
+    function sellerInstantAccept(idx) {
+      const podium = state.podiums[idx];
+      if (!podium.activeLot || !podium.isPlayerSeller) return;
+
+      podium.reserve = podium.currentBid;
+      podium.reserveMet = true;
+      concludePodiumLot(idx);
+      showToast(`Instant Sale! High bid of $${podium.currentBid.toLocaleString()} accepted on ${podium.name}.`, 'info');
+    }
+
+    function sellerDropReserve(idx) {
+      const podium = state.podiums[idx];
+      if (!podium.activeLot || !podium.isPlayerSeller) return;
+
+      podium.reserve = podium.currentBid;
+      podium.reserveMet = true;
+      renderPodiumDynamic(idx);
+      showToast(`Reserve dropped to $${podium.currentBid.toLocaleString()} on ${podium.name}. Guaranteed sale!`, 'info');
+    }
+
+    function concludePodiumLot(idx) {
+      const podium = state.podiums[idx];
       clearInterval(podium.intervalId);
       playSound('gavel');
 
@@ -2193,120 +2481,145 @@
           state.specimens.push(lot);
           populateDossierSelect();
           renderSpecimenLedger();
+          logFieldDispatch(`[AUCTION CLOSED] Your consigned ${lot.name} did not meet reserve ($${podium.reserve.toLocaleString()}). Safely returned to ledger.`);
         }
       } else if (podium.isPlayerHighBidder) {
         state.funds -= podium.currentBid;
         state.specimens.push(lot);
-        showToast(`Winning Gavel! ${lot.name} acquired on ${podium.name}!`, 'info');
+        showToast(`Winning Gavel! Acquired ${lot.name} on ${podium.name}!`, 'info');
         updateHeaderStats();
         populateDossierSelect();
         renderSpecimenLedger();
+        logFieldDispatch(`[ACQUISITION] Won auction on ${podium.name} for ${lot.name} at $${podium.currentBid.toLocaleString()}. Added to ledger.`);
       } else if (podium.isPlayerSeller) {
         const netFunds = podium.currentBid;
         state.funds += netFunds;
         showToast(`Hammer fell! Consignment on ${podium.name} sold to ${podium.highBidder} for +$${netFunds.toLocaleString()}!`, 'info');
         updateHeaderStats();
+        logFieldDispatch(`[SOLD CONSIGNMENT] Your ${lot.name} sold on ${podium.name} to ${podium.highBidder} for +$${netFunds.toLocaleString()}! Funds credited.`);
       }
 
-      // Briefly display gavel conclusion, then rotate new lot
-      const card = document.getElementById(`podium-card-${podiumIdx}`);
-      card.innerHTML = `
-        <div class="p-8 text-center font-mono space-y-2">
-          <strong class="text-ink-950 uppercase text-lg block">GAVEL FALLS &middot; LOT CONCLUDED</strong>
-          <span class="text-xs text-ink-700 block">${isReserveMet ? `Sold for $${podium.currentBid.toLocaleString()} to ${podium.highBidder}` : 'Passed (Reserve Not Met)'}</span>
-          <span class="text-[10px] text-ink-500 block uppercase">Rotating next lot...</span>
-        </div>
-      `;
+      // Display conclusion in action bar briefly, then rotate
+      const actionBar = document.getElementById(`podium-action-bar-${idx}`);
+      if (actionBar) {
+        actionBar.innerHTML = `
+          <div class="p-2.5 bg-parchment-200 border border-ink-950 text-center font-mono text-xs">
+            <strong class="text-ink-950 uppercase block">GAVEL FALLS &middot; SOLD</strong>
+            <span class="text-ink-700 block mt-0.5">${isReserveMet ? `Realized $${podium.currentBid.toLocaleString()} &middot; ${podium.highBidder}` : 'Passed (Reserve Not Met)'}</span>
+            <span class="text-[10px] text-ink-500 uppercase block mt-1">Mounting next lot...</span>
+          </div>
+        `;
+      }
 
-      setTimeout(() => startNewPodiumLot(podiumIdx), 3500);
+      setTimeout(() => startPodiumLot(idx), 3500);
     }
 
-    function renderPodiumCard(idx) {
+    // Surgical Static DOM render for a podium
+    function renderPodiumStatic(idx) {
       const podium = state.podiums[idx];
-      const card = document.getElementById(`podium-card-${idx}`);
+      const lot = podium.activeLot;
+      if (!lot) return;
+
+      const roleBadge = document.getElementById(`podium-role-badge-${idx}`);
+      if (roleBadge) {
+        roleBadge.className = `stamp-badge ${podium.isPlayerSeller ? 'stamp-certified' : 'border-ink-950 text-ink-950 bg-parchment-100'}`;
+        roleBadge.textContent = podium.isPlayerSeller ? 'YOUR CONSIGNMENT · SELLER VIEW' : 'EXCHANGE BLOCK';
+      }
+
+      const titleEl = document.getElementById(`podium-title-${idx}`);
+      if (titleEl) titleEl.textContent = lot.name;
+
+      const subEl = document.getElementById(`podium-subtitle-${idx}`);
+      if (subEl) subEl.textContent = lot.locality;
+
+      const gradeEl = document.getElementById(`podium-grade-${idx}`);
+      if (gradeEl) gradeEl.textContent = `[${lot.grade}]`;
+
+      const coaEl = document.getElementById(`podium-coa-${idx}`);
+      if (coaEl) {
+        coaEl.className = `stamp-badge ${lot.certified ? 'stamp-certified' : 'border-ink-500 text-ink-500'}`;
+        coaEl.textContent = lot.certified ? `[COA #${lot.serial}]` : '[RAW GANGUE]';
+      }
+
+      const resTargetEl = document.getElementById(`podium-reserve-target-${idx}`);
+      if (resTargetEl) {
+        resTargetEl.textContent = podium.reserve === 0 ? 'Absolute ($0)' : `Reserve: $${podium.reserve.toLocaleString()}`;
+      }
+
+      renderPodiumDynamic(idx);
+      renderPodiumControls(idx);
+    }
+
+    // Surgical Dynamic Price / Reserve render
+    function renderPodiumDynamic(idx) {
+      const podium = state.podiums[idx];
       if (!podium.activeLot) return;
 
-      const lot = podium.activeLot;
+      const bidEl = document.getElementById(`podium-bid-${idx}`);
+      if (bidEl) bidEl.textContent = `$${podium.currentBid.toLocaleString()}`;
 
-      card.innerHTML = `
-        <div>
-          <div class="flex items-center justify-between pb-3 border-b-2 border-ink-950 font-mono text-xs">
-            <div class="flex items-center space-x-2">
-              <strong class="text-ink-950">${podium.name}</strong>
-              <span class="stamp-badge ${podium.isPlayerSeller ? 'stamp-certified' : 'border-ink-950 text-ink-950 bg-parchment-100'}">
-                ${podium.isPlayerSeller ? 'YOUR CONSIGNMENT' : 'EXCHANGE BLOCK'}
-              </span>
-            </div>
-            <div class="flex items-center space-x-1.5">
-              <span class="text-[10px] text-ink-500 uppercase">Closing:</span>
-              <span id="podium-timer-${idx}" class="font-bold text-xs px-2 py-0.5 bg-ink-950 text-parchment-25">00:${podium.timer < 10 ? '0' : ''}${podium.timer}</span>
-            </div>
-          </div>
+      const bidderEl = document.getElementById(`podium-bidder-${idx}`);
+      if (bidderEl) {
+        bidderEl.textContent = podium.highBidder;
+        bidderEl.className = `text-[10px] block truncate max-w-[170px] ${podium.isPlayerHighBidder ? 'text-archival-red font-bold' : 'text-ink-700'}`;
+      }
 
-          <div class="my-4">
-            <div class="flex flex-wrap items-center gap-1.5 mb-1.5">
-              <span class="stamp-badge border-ink-950 text-ink-950">[${lot.grade}]</span>
-              ${lot.certified ? `<span class="stamp-badge stamp-certified">[COA #${lot.serial}]</span>` : '<span class="stamp-badge border-ink-500 text-ink-500">[RAW]</span>'}
-            </div>
-
-            <h3 class="font-serif text-2xl font-bold text-ink-950 leading-tight">${lot.name}</h3>
-            <p class="text-xs font-serif italic text-ink-700 mt-0.5">${lot.locality}</p>
-
-            <div class="mt-3 p-3 bg-parchment-100 border border-parchment-300 font-mono text-xs flex justify-between items-center">
-              <div>
-                <span class="text-[10px] text-ink-500 uppercase block">High Bid:</span>
-                <span class="font-serif text-2xl font-bold text-ink-950">$${podium.currentBid.toLocaleString()}</span>
-                <span class="text-[10px] block ${podium.isPlayerHighBidder ? 'text-archival-red font-bold' : 'text-ink-700'}">${podium.highBidder}</span>
-              </div>
-              <div class="text-right">
-                <span class="text-[10px] text-ink-500 uppercase block">Reserve: $${podium.reserve.toLocaleString()}</span>
-                <span class="stamp-badge ${podium.reserveMet ? 'stamp-certified' : 'border-ink-500 text-ink-500 bg-parchment-50'} mt-1 inline-block">
-                  ${podium.reserveMet ? '✓ RESERVE MET' : 'BELOW RESERVE'}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="pt-3 border-t-2 border-ink-950 font-mono text-xs">
-          ${podium.isPlayerSeller ? `
-            <div class="p-2.5 bg-parchment-200 border border-dashed border-ink-950 text-center text-[11px] text-ink-950">
-              <strong>CONSIGNOR ACTIVE VIEW</strong> &middot; Bidding disabled on your own lot. Watch syndicates bid!
-            </div>
-          ` : `
-            <div class="flex gap-2">
-              <button onclick="playerBidOnPodium(${idx}, 500)" class="flex-1 py-2 border border-ink-950 bg-parchment-50 hover:bg-parchment-200 font-bold transition">
-                +$500
-              </button>
-              <button onclick="playerBidOnPodium(${idx}, 2000)" class="flex-1 py-2 border border-ink-950 bg-parchment-50 hover:bg-parchment-200 font-bold transition">
-                +$2,000
-              </button>
-              <button onclick="playerBidOnPodium(${idx}, 5000)" class="flex-1 py-2 border-2 border-ink-950 bg-ink-950 text-parchment-25 hover:bg-ink-800 font-bold transition">
-                +$5,000
-              </button>
-            </div>
-          `}
-        </div>
-      `;
+      const resStatusEl = document.getElementById(`podium-reserve-status-${idx}`);
+      if (resStatusEl) {
+        if (podium.reserve === 0 || podium.reserveMet) {
+          resStatusEl.className = 'stamp-badge stamp-certified mt-1 inline-block';
+          resStatusEl.textContent = '✓ RESERVE MET';
+        } else {
+          resStatusEl.className = 'stamp-badge border-ink-500 text-ink-500 bg-parchment-50 mt-1 inline-block';
+          resStatusEl.textContent = 'BELOW RESERVE';
+        }
+      }
     }
 
-    function renderAllPodiums() {
-      state.podiums.forEach((_, idx) => renderPodiumCard(idx));
-    }
-
-    function updatePodiumTimerDisplay(idx) {
-      const el = document.getElementById(`podium-timer-${idx}`);
+    // Surgical Controls render
+    function renderPodiumControls(idx) {
       const podium = state.podiums[idx];
-      if (el) el.textContent = `00:${podium.timer < 10 ? '0' : ''}${podium.timer}`;
+      const actionBar = document.getElementById(`podium-action-bar-${idx}`);
+      if (!actionBar || !podium.activeLot) return;
+
+      if (podium.isPlayerSeller) {
+        actionBar.innerHTML = `
+          <div class="space-y-1.5">
+            <div class="flex gap-2">
+              <button onclick="sellerInstantAccept(${idx})" class="flex-1 py-1.5 border-2 border-ink-950 bg-ink-950 text-parchment-25 font-bold hover:bg-ink-800 transition">
+                Accept $${podium.currentBid.toLocaleString()} &amp; Sell Now
+              </button>
+              <button onclick="sellerDropReserve(${idx})" class="px-3 py-1.5 border border-ink-950 bg-parchment-50 hover:bg-parchment-200 transition">
+                Drop Reserve
+              </button>
+            </div>
+            <div class="text-[10px] text-ink-500 text-center font-mono">Consignor Active View &middot; Syndicates actively bidding on your lot.</div>
+          </div>
+        `;
+      } else {
+        actionBar.innerHTML = `
+          <div class="flex gap-2">
+            <button onclick="playerPlaceBid(${idx}, 500)" class="flex-1 py-2 border border-ink-950 bg-parchment-50 hover:bg-parchment-200 font-bold transition">
+              +$500
+            </button>
+            <button onclick="playerPlaceBid(${idx}, 2000)" class="flex-1 py-2 border border-ink-950 bg-parchment-50 hover:bg-parchment-200 font-bold transition">
+              +$2,000
+            </button>
+            <button onclick="playerPlaceBid(${idx}, 5000)" class="flex-1 py-2 border-2 border-ink-950 bg-ink-950 text-parchment-25 hover:bg-ink-800 font-bold transition">
+              +$5,000
+            </button>
+          </div>
+        `;
+      }
     }
 
-    // Modal Consignment Handler
-    function openMultiPodiumConsignModal() {
+    // Consignment Modal Handlers
+    function openMultiPodiumConsignModal(preselectId = null) {
       const select = document.getElementById('modal-consign-specimen-select');
       select.innerHTML = '';
 
       if (state.specimens.length === 0) {
-        showToast('No specimens in catalog to consign. Discover minerals first!', 'warning');
+        showToast('No catalogued specimens available to consign. Discover minerals first!', 'warning');
         return;
       }
 
@@ -2317,7 +2630,9 @@
         select.appendChild(opt);
       });
 
-      onConsignModalSelectChange(state.specimens[0].id);
+      if (preselectId) select.value = preselectId;
+      onConsignModalSelectChange(select.value);
+
       document.getElementById('modal-consign').classList.remove('hidden');
     }
 
@@ -2326,16 +2641,40 @@
     }
 
     function onConsignModalSelectChange(specId) {
+      const strat = document.getElementById('modal-consign-strategy').value;
+      onConsignStrategyChange(strat);
+    }
+
+    function onConsignStrategyChange(strategy) {
+      const specId = document.getElementById('modal-consign-specimen-select').value;
       const spec = getSpecimenById(specId);
-      if (spec) {
-        document.getElementById('modal-consign-reserve').value = Math.round(spec.value * 0.80);
+      const resInput = document.getElementById('modal-consign-reserve');
+      const hint = document.getElementById('consign-reserve-hint');
+
+      if (!spec) return;
+
+      if (strategy === 'absolute') {
+        resInput.value = 0;
+        resInput.disabled = true;
+        hint.textContent = 'Guaranteed Sale: Highest institutional bid takes the lot regardless of amount.';
+      } else if (strategy === 'fair') {
+        resInput.value = Math.round(spec.value * 0.75);
+        resInput.disabled = false;
+        hint.textContent = 'Recommended: 75% of appraisal. High likelihood of rapid syndicate bidding.';
+      } else if (strategy === 'curator') {
+        resInput.value = Math.round(spec.value * 0.95);
+        resInput.disabled = false;
+        hint.textContent = 'Aggressive Reserve: 95% of appraisal. COA and high grade required to attract bids.';
+      } else {
+        resInput.disabled = false;
+        hint.textContent = 'Enter any specific reserve price.';
       }
     }
 
     function submitConsignmentModal() {
       const podiumIdx = parseInt(document.getElementById('modal-consign-podium-idx').value, 10);
       const specId = document.getElementById('modal-consign-specimen-select').value;
-      const reserve = parseInt(document.getElementById('modal-consign-reserve').value, 10) || 1000;
+      const reserve = parseInt(document.getElementById('modal-consign-reserve').value, 10) || 0;
 
       const idx = state.specimens.findIndex(s => s.id === specId);
       if (idx === -1) return;
@@ -2345,8 +2684,8 @@
 
       closeMultiPodiumConsignModal();
       switchTab('auction');
-      startNewPodiumLot(podiumIdx, spec, reserve);
-      showToast(`${spec.name} is now live on ${state.podiums[podiumIdx].name}!`, 'info');
+      startPodiumLot(podiumIdx, spec, reserve);
+      showToast(`${spec.name} is now mounted to ${state.podiums[podiumIdx].name}!`, 'info');
 
       updateHeaderStats();
       populateDossierSelect();
@@ -2500,7 +2839,7 @@
       });
     }
 
-    // --- DEVELOPER GOD MODE CURATORIAL SUITE ---
+    // --- GOD MODE CURATORIAL OVERRIDE SUITE ---
     function godAddFunds(amt) {
       state.funds += amt;
       updateHeaderStats();
@@ -2539,14 +2878,13 @@
       switchTab('dossier');
     }
 
-    function godClearGrid() {
-      state.strataCells.forEach(c => {
-        if (!c.revealed) onStrataCellClick(c.idx);
-      });
-      showToast('⚡ Seismic detonation excavated all 64 strata blocks!');
+    function godReplenishPicks() {
+      state.picksRemaining = state.maxPicks;
+      updatePickDisplays();
+      showToast('⚡ Expedition picks replenished to 50!');
     }
 
-    // --- TAB NAVIGATION & CONTROLLER ---
+    // --- TAB CONTROLLER ---
     function switchTab(tabId) {
       ['prospecting', 'dossier', 'auction', 'lab', 'inventory', 'encyclopedia', 'godmode'].forEach(p => {
         const el = document.getElementById(`panel-${p}`);
@@ -2573,9 +2911,9 @@
       document.getElementById('lab-geode-count-badge').textContent = `${state.unopenedGeodes} Unopened Nodules`;
     }
 
-    // --- INITIALIZATION ---
+    // --- APP INITIALIZATION ---
     window.addEventListener('DOMContentLoaded', () => {
-      // Seed Starter Specimens
+      // Starter Specimens
       const diamondSpec = generateSpecimen('diamond_octahedral', 'G10');
       diamondSpec.certified = true;
       const rubySpec = generateSpecimen('ruby_burma', 'G9');
