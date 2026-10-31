@@ -1,0 +1,2598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Geo Dudes: Field Dossier &amp; Mineral Ledger (STRATA &amp; STONE)</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Archival Typography: Cormorant Garamond, Space Grotesk, Space Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600;1,700&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['"Cormorant Garamond"', 'serif'],
+            sans: ['"Space Grotesk"', 'sans-serif'],
+            mono: ['"Space Mono"', 'monospace'],
+          },
+          colors: {
+            parchment: {
+              25: '#fdfcf9',
+              50: '#fbf9f5',
+              100: '#f5f2eb',
+              200: '#ece7db',
+              300: '#dfd7c5',
+              400: '#c5bbae',
+            },
+            ink: {
+              950: '#0a0a0a',
+              900: '#141414',
+              850: '#1e1e1e',
+              800: '#2b2b2b',
+              700: '#404040',
+              500: '#737373',
+              400: '#a3a3a3',
+            },
+            archival: {
+              red: '#881337',
+              seal: '#1a1a1a',
+              bronze: '#3f3830'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Archival Ledger Grid & Paper Styling */
+    body {
+      background-color: #f5f2eb;
+      color: #0a0a0a;
+      background-image: 
+        linear-gradient(to right, rgba(10, 10, 10, 0.035) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(10, 10, 10, 0.035) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    /* Stamped Badge Effect */
+    .stamp-badge {
+      border: 1.5px solid #0a0a0a;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      padding: 0.15rem 0.5rem;
+      font-size: 0.65rem;
+      border-radius: 2px;
+      line-height: 1.2;
+    }
+    
+    .stamp-certified {
+      border-color: #881337;
+      color: #881337;
+      background-color: rgba(136, 19, 55, 0.05);
+    }
+
+    .paper-card {
+      background: #fbf9f5;
+      border: 1.5px solid #dfd7c5;
+      box-shadow: 2px 2px 0px rgba(10, 10, 10, 0.08);
+    }
+    
+    .paper-card-dark {
+      background: #141414;
+      color: #fbf9f5;
+      border: 1.5px solid #2b2b2b;
+      box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.4);
+    }
+
+    .tab-btn.active {
+      background-color: #0a0a0a;
+      color: #fbf9f5;
+      border-color: #0a0a0a;
+    }
+
+    /* 8x8 Grid Strata Cells */
+    .strata-cell {
+      aspect-ratio: 1 / 1;
+      border: 1px solid #c5bbae;
+      background-color: #ece7db;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s ease-in-out;
+      position: relative;
+      overflow: hidden;
+    }
+    .strata-cell:hover:not(.revealed) {
+      background-color: #dfd7c5;
+      border-color: #0a0a0a;
+      transform: scale(0.97);
+    }
+    .strata-cell.revealed {
+      background-color: #fbf9f5;
+      border-color: #c5bbae;
+      cursor: default;
+    }
+    .strata-cell.revealed.strike-gem {
+      border: 1.5px solid #0a0a0a;
+      background-color: #f5f2eb;
+    }
+
+    /* Custom Ledger Scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #ece7db; }
+    ::-webkit-scrollbar-thumb { background: #737373; border-radius: 0; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans selection:bg-ink-950 selection:text-parchment-25">
+
+  <!-- ================= ARCHIVAL HEADER & MASTHEAD ================= -->
+  <header class="border-b-2 border-ink-950 bg-parchment-25 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-col md:flex-row md:items-center justify-between gap-3">
+      
+      <!-- Brand & Accession Registry -->
+      <div class="flex items-center space-x-3.5">
+        <div class="w-11 h-11 border-2 border-ink-950 bg-parchment-100 flex items-center justify-center font-serif text-2xl font-bold shadow-[2px_2px_0px_#0a0a0a]">
+          &sect;
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <h1 class="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-ink-950 uppercase leading-none">Geo Dudes</h1>
+            <span class="stamp-badge border-ink-950 text-ink-950 bg-parchment-100">Curatorial Dossier Vol. V</span>
+          </div>
+          <p class="text-[11px] font-mono uppercase tracking-widest text-ink-500 mt-0.5">Strata &amp; Stone &middot; Field Mineralogist &amp; 4-Podium Exchange</p>
+        </div>
+      </div>
+
+      <!-- Financial Metrics & Indicators -->
+      <div class="flex flex-wrap items-center gap-2 font-mono text-xs">
+        <div class="px-3 py-1.5 border border-ink-950 bg-parchment-100 flex items-center space-x-2">
+          <span class="text-ink-500 uppercase text-[10px]">Expedition Funds:</span>
+          <span id="stat-funds" class="font-bold text-ink-950 text-sm">$35,000</span>
+        </div>
+
+        <div class="px-3 py-1.5 border border-ink-950 bg-parchment-100 flex items-center space-x-2 cursor-pointer hover:bg-parchment-200 transition" onclick="switchTab('inventory')">
+          <span class="text-ink-500 uppercase text-[10px]">Catalogued:</span>
+          <span id="stat-bag-count" class="font-bold text-ink-950">0</span>
+        </div>
+
+        <div class="px-3 py-1.5 border border-ink-950 bg-parchment-100 flex items-center space-x-2 cursor-pointer hover:bg-parchment-200 transition" onclick="switchTab('lab')">
+          <span class="text-ink-500 uppercase text-[10px]">Unopened Geodes:</span>
+          <span id="stat-geode-count" class="font-bold text-ink-950">0</span>
+        </div>
+
+        <button id="btn-sound" class="px-2.5 py-1.5 border border-ink-950 bg-parchment-100 hover:bg-ink-950 hover:text-parchment-25 font-mono text-xs transition" title="Toggle Sound">
+          [AUDIO: ON]
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="border-t border-parchment-300 bg-parchment-100 px-4 sm:px-6 overflow-x-auto">
+      <div class="max-w-7xl mx-auto flex space-x-1 py-1.5 text-xs font-mono">
+        <button onclick="switchTab('prospecting')" id="tab-btn-prospecting" class="tab-btn active px-3.5 py-1.5 border border-ink-950 uppercase tracking-wider font-semibold transition">
+          1. Field Strata Grid
+        </button>
+        <button onclick="switchTab('dossier')" id="tab-btn-dossier" class="tab-btn px-3.5 py-1.5 border border-ink-950 uppercase tracking-wider font-semibold transition">
+          2. Master Specimen Dossier
+        </button>
+        <button onclick="switchTab('auction')" id="tab-btn-auction" class="tab-btn px-3.5 py-1.5 border border-ink-950 uppercase tracking-wider font-semibold transition">
+          3. 4-Podium Live Exchange
+        </button>
+        <button onclick="switchTab('lab')" id="tab-btn-lab" class="tab-btn px-3.5 py-1.5 border border-ink-950 uppercase tracking-wider font-semibold transition">
+          4. Diagnostic Prep Lab
+        </button>
+        <button onclick="switchTab('inventory')" id="tab-btn-inventory" class="tab-btn px-3.5 py-1.5 border border-ink-950 uppercase tracking-wider font-semibold transition">
+          5. Specimen Ledger
+        </button>
+        <button onclick="switchTab('encyclopedia')" id="tab-btn-encyclopedia" class="tab-btn px-3.5 py-1.5 border border-ink-950 uppercase tracking-wider font-semibold transition">
+          6. Peabody Compendium
+        </button>
+        <button onclick="switchTab('godmode')" id="tab-btn-godmode" class="tab-btn px-3.5 py-1.5 border border-archival-red text-archival-red uppercase tracking-wider font-semibold transition ml-auto">
+          [Curatorial Override]
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ================= MAIN VIEWPORT CONTAINER ================= -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
+
+    <!-- 1. FIELD PROSPECTING (8x8 1-TAP STRATA GRID & LOGS) -->
+    <section id="panel-prospecting" class="tab-panel space-y-6">
+      
+      <!-- Locality Controls -->
+      <div class="paper-card p-6 border-2 border-ink-950">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center space-x-2">
+              <span class="stamp-badge border-ink-950 text-ink-950">Geological Survey Sector</span>
+              <span class="text-xs font-mono text-ink-500 uppercase tracking-widest" id="site-tier-badge">Igneous Intrusion &middot; Kimberlite Diatreme</span>
+            </div>
+            <h2 id="site-title" class="font-serif text-3xl sm:text-4xl font-bold text-ink-950 mt-1">Kimberley Diamond Pipe, South Africa</h2>
+            <p id="site-desc" class="text-sm text-ink-700 font-serif italic mt-1 max-w-3xl">
+              Deep mantle-derived volcanic pipe breeched 100km below the continental craton, carrying octahedral diamond crystals, chrome pyrope, and eclogitic nodules.
+            </p>
+          </div>
+
+          <div class="flex flex-col gap-1 w-full lg:w-80 font-mono">
+            <label class="text-[10px] uppercase tracking-widest text-ink-500">Select Prospecting Locality:</label>
+            <select id="select-site" onchange="changeSite(this.value)" class="bg-parchment-100 border-2 border-ink-950 text-ink-950 text-xs p-2.5 font-mono focus:outline-none">
+              <option value="kimberley">1. Kimberley Diamond Pipe, South Africa (Diamonds, Mantle Xenoliths)</option>
+              <option value="mogok">2. Mogok Stone Tract, Myanmar (Pigeon's Blood Ruby, Painite, Spinel)</option>
+              <option value="kashmir">3. Zanskar Pegmatites, Kashmir (Cornflower Blue Sapphires)</option>
+              <option value="muzomine">4. Muzo Emerald Basin, Colombia (Trapiche Emeralds, Calcite)</option>
+              <option value="lightningridge">5. Lightning Ridge Basin, Australia (Black Opal, Fossils)</option>
+              <option value="ural">6. Tokovaya River, Ural Mountains (Ural Color-Shift Alexandrite)</option>
+              <option value="magadan">7. Magadan Strewnfield, Siberia (Seymchan Pallasite Meteorite)</option>
+              <option value="namibia">8. Gibeon Strewnfield, Great Namaqualand (Iron Meteorite Plates)</option>
+              <option value="keweenaw">9. Keweenaw Peninsula, MI (Pure Solid Copper &amp; Native Gold)</option>
+              <option value="artigas">10. Artigas Continental Traps, Uruguay (Hollow Geode Nodules)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mt-5 pt-4 border-t border-parchment-300 flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
+          <div class="flex items-center space-x-3">
+            <button onclick="resetStrataGrid()" class="px-4 py-2 border-2 border-ink-950 bg-parchment-100 hover:bg-parchment-200 text-ink-950 font-bold uppercase transition">
+              &circlearrowright; Survey New 8&times;8 Strata Section
+            </button>
+            <button onclick="expeditionBlast()" class="px-4 py-2 border border-ink-950 bg-ink-950 text-parchment-25 font-bold uppercase hover:bg-ink-800 transition">
+              Dynamite Trenches (Clear 8 Cells &middot; $350)
+            </button>
+          </div>
+          <div class="text-ink-500">
+            Grid Status: <span id="strata-remaining-count" class="font-bold text-ink-950">64</span> unexcavated strata blocks.
+          </div>
+        </div>
+      </div>
+
+      <!-- Excavation Grid & Field Wire -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- 8x8 Interactive Click Grid -->
+        <div class="lg:col-span-7 paper-card p-5 border-2 border-ink-950">
+          <div class="flex items-center justify-between pb-3 border-b border-parchment-300 font-mono text-xs">
+            <div class="flex items-center space-x-2">
+              <span class="stamp-badge border-ink-950 text-ink-950">Active Trench Grid</span>
+              <span class="text-ink-500 uppercase text-[10px]">Tap any strata square to harvest</span>
+            </div>
+            <span class="text-[10px] text-ink-500 uppercase">8&times;8 Lithic Matrix</span>
+          </div>
+
+          <!-- The 8x8 Grid Container -->
+          <div id="strata-grid-container" class="mt-4 grid grid-cols-8 gap-1.5 p-2 bg-parchment-200 border-2 border-ink-950 shadow-inner">
+            <!-- Populated via script -->
+          </div>
+
+          <div class="mt-3 flex items-center justify-between text-[11px] font-mono text-ink-500">
+            <span>&bull; Single-click excavation trigger</span>
+            <span>Uncovers mineral crystals, native metals, meteorites, or geodes</span>
+          </div>
+        </div>
+
+        <!-- Real-Time Field Dispatch Feed -->
+        <div class="lg:col-span-5 paper-card p-5 border-2 border-ink-950 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between pb-3 border-b border-parchment-300 font-mono text-xs">
+              <span class="font-bold uppercase tracking-wider text-ink-950">Chronological Field Wire</span>
+              <span class="stamp-badge border-ink-950 text-ink-950">Live Telegraph</span>
+            </div>
+
+            <div id="field-dispatch-feed" class="mt-3 space-y-2.5 max-h-[460px] overflow-y-auto pr-1 text-xs font-mono">
+              <div class="p-2.5 bg-parchment-100 border border-parchment-300 text-ink-700 leading-relaxed">
+                [EXPEDITION COMMENCED] Equipment calibrated. 8x8 strata surveyed. Tap any bedrock square on the grid to extract minerals.
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-parchment-300 flex items-center justify-between font-mono text-xs">
+            <span class="text-ink-500">Latest Recovery:</span>
+            <button onclick="switchTab('dossier')" id="btn-view-latest-dossier" class="font-bold text-ink-950 hover:underline" disabled>
+              Awaiting First Strike &rarr;
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- 2. ARCHIVAL SPECIMEN DOSSIER (DEEP SCIENTIFIC & CURATORIAL FACTS) -->
+    <section id="panel-dossier" class="tab-panel hidden space-y-6">
+      
+      <!-- Dossier Selector Header -->
+      <div class="paper-card p-4 border-2 border-ink-950 flex flex-col sm:flex-row sm:items-center justify-between gap-4 font-mono text-xs">
+        <div>
+          <span class="text-[10px] uppercase tracking-widest text-ink-500">Peabody Curatorial Archives</span>
+          <h2 class="font-serif text-2xl font-bold text-ink-950">Specimen Master Dossier</h2>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <label class="text-ink-500">Select Registry File:</label>
+          <select id="dossier-specimen-select" onchange="loadDossierById(this.value)" class="bg-parchment-100 border border-ink-950 text-ink-950 p-2 font-mono focus:outline-none">
+            <!-- Dynamically populated -->
+          </select>
+        </div>
+      </div>
+
+      <!-- MASTER DOSSIER PAPER CARD -->
+      <div id="dossier-master-card" class="paper-card p-6 sm:p-10 border-2 border-ink-950 shadow-[4px_4px_0px_#0a0a0a] relative">
+        
+        <!-- Header & Stamped Provenance -->
+        <div class="flex flex-col sm:flex-row sm:items-start justify-between pb-6 border-b-2 border-ink-950 gap-4">
+          <div>
+            <div class="flex flex-wrap items-center gap-2 mb-2">
+              <span id="dossier-accession" class="font-mono text-xs font-bold text-ink-950 bg-parchment-200 px-2 py-0.5 border border-ink-950">ACCESSION #GD-9041-DM</span>
+              <span id="dossier-status-badge" class="stamp-badge stamp-certified">[COA CERTIFIED #CMA-2026-9041]</span>
+              <span id="dossier-grade-badge" class="stamp-badge border-ink-950 text-ink-950">[G10 PEABODY MUSEUM GRADE]</span>
+              <span id="dossier-class-badge" class="stamp-badge border-ink-950 text-ink-950 bg-parchment-100">PREVIOUS GEMSTONE</span>
+            </div>
+            <h1 id="dossier-title" class="font-serif text-3xl sm:text-5xl font-bold text-ink-950 tracking-tight">Kimberlite Octahedral Diamond</h1>
+            <p id="dossier-subtitle" class="font-serif text-lg italic text-ink-700 mt-1">Kimberley Diatreme Pipe, Northern Cape, South Africa</p>
+          </div>
+
+          <!-- Archival Valuation Seal -->
+          <div class="border-2 border-ink-950 p-3.5 text-center min-w-[160px] bg-parchment-100 shadow-[2px_2px_0px_#0a0a0a]">
+            <div class="text-[9px] font-mono uppercase tracking-widest text-ink-500">Appraised Valuation</div>
+            <div id="dossier-valuation" class="font-serif text-3xl font-bold text-ink-950 mt-0.5">$38,500</div>
+            <div id="dossier-weight" class="text-[10px] font-mono text-ink-700 mt-0.5">14.8 Carats &middot; 2.96g</div>
+          </div>
+        </div>
+
+        <!-- 8-Point Scientific Crystallography & Chemistry Grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 py-6 border-b border-parchment-300 text-xs font-mono">
+          <div class="p-3 bg-parchment-100 border border-parchment-300">
+            <span class="text-ink-500 block text-[10px] uppercase">Chemical Formula</span>
+            <strong id="dossier-formula" class="text-ink-950 block mt-0.5 text-sm">C (Pure Carbon)</strong>
+            <span id="dossier-spacegroup" class="text-[10px] text-ink-700">Fd3m (Cubic)</span>
+          </div>
+
+          <div class="p-3 bg-parchment-100 border border-parchment-300">
+            <span class="text-ink-500 block text-[10px] uppercase">Crystal System / Habit</span>
+            <strong id="dossier-system" class="text-ink-950 block mt-0.5 text-sm">Isometric / Octahedron</strong>
+            <span id="dossier-habit" class="text-[10px] text-ink-700">Trigonal Growth Hills</span>
+          </div>
+
+          <div class="p-3 bg-parchment-100 border border-parchment-300">
+            <span class="text-ink-500 block text-[10px] uppercase">Mohs Hardness &amp; SG</span>
+            <strong id="dossier-mohs" class="text-ink-950 block mt-0.5 text-sm">10.0 Mohs (Extreme)</strong>
+            <span id="dossier-sg" class="text-[10px] text-ink-700">SG: 3.52 g/cm³</span>
+          </div>
+
+          <div class="p-3 bg-parchment-100 border border-parchment-300">
+            <span class="text-ink-500 block text-[10px] uppercase">Refractive Index &amp; Luster</span>
+            <strong id="dossier-ri" class="text-ink-950 block mt-0.5 text-sm">n = 2.417 (Adamantine)</strong>
+            <span id="dossier-dispersion" class="text-[10px] text-ink-700">Dispersion: 0.044</span>
+          </div>
+
+          <div class="p-3 bg-parchment-100 border border-parchment-300">
+            <span class="text-ink-500 block text-[10px] uppercase">Cleavage &amp; Fracture</span>
+            <strong id="dossier-cleavage" class="text-ink-950 block mt-0.5 text-sm">Perfect {111} Octahedral</strong>
+            <span id="dossier-fracture" class="text-[10px] text-ink-700">Conchoidal</span>
+          </div>
+
+          <div class="p-3 bg-parchment-100 border border-parchment-300">
+            <span class="text-ink-500 block text-[10px] uppercase">Diagnostic Streak</span>
+            <strong id="dossier-streak" class="text-ink-950 block mt-0.5 text-sm">Colorless / None</strong>
+            <span class="text-[10px] text-ink-700">Scratches Porcelain</span>
+          </div>
+
+          <div class="p-3 bg-parchment-100 border border-parchment-300">
+            <span class="text-ink-500 block text-[10px] uppercase">Host Matrix Gangue</span>
+            <strong id="dossier-matrix" class="text-ink-950 block mt-0.5 text-sm">0% (Pure Crystal Face)</strong>
+            <span id="dossier-trimmed-status" class="text-[10px] text-ink-700">Natural Untouched</span>
+          </div>
+
+          <div class="p-3 bg-parchment-100 border border-parchment-300">
+            <span class="text-ink-500 block text-[10px] uppercase">Pleochroism / Optics</span>
+            <strong id="dossier-optics" class="text-ink-950 block mt-0.5 text-sm">Isotropic</strong>
+            <span id="dossier-phenom" class="text-[10px] text-ink-700">Strong Blue UV Fluo</span>
+          </div>
+        </div>
+
+        <!-- Multi-Paragraph Scientific Curatorial Sections -->
+        <div class="py-6 border-b border-parchment-300 space-y-6">
+          
+          <!-- Section A: Genesis & Paragenesis -->
+          <div>
+            <h4 class="font-serif text-xl font-bold text-ink-950 uppercase tracking-wide flex items-center space-x-2">
+              <span>&sect; 1. Geological Genesis, Paragenesis &amp; Tectonic History</span>
+            </h4>
+            <div id="dossier-genesis" class="mt-2 text-sm text-ink-800 font-serif leading-relaxed italic bg-parchment-100 p-4 border-l-4 border-ink-950">
+              Formed within the subcontinental lithospheric mantle at extreme pressures exceeding 5 gigapascals and temperatures beyond 1,200&deg;C. Transported catastrophically to the surface via explosive deep-mantle kimberlite magma diatremes erupting at supersonic velocities.
+            </div>
+          </div>
+
+          <!-- Section B: Optical Phenomena & Curatorial Field Notes -->
+          <div>
+            <h4 class="font-serif text-xl font-bold text-ink-950 uppercase tracking-wide flex items-center space-x-2">
+              <span>&sect; 2. Optical Phenomena, Structural Morphology &amp; Museum Provenance</span>
+            </h4>
+            <div id="dossier-notes" class="mt-2 text-sm text-ink-800 font-serif leading-relaxed italic bg-parchment-100 p-4 border-l-4 border-ink-950">
+              Exhibits pristine triangular trigons (growth etch pits) upon smooth octahedral faces. Adamantine surface luster radiates brilliant white flashes and fierce chromatic fire under directional archival lighting.
+            </div>
+          </div>
+
+          <!-- Section C: Diagnostic Testing Logs -->
+          <div>
+            <h4 class="font-mono text-xs font-bold text-ink-950 uppercase tracking-wider">Diagnostic Laboratory Test Record</h4>
+            <div class="mt-2 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-mono">
+              <div class="p-3 border border-parchment-300 bg-parchment-50">
+                <span class="text-ink-500 text-[10px] block uppercase">Mohs Scratch Hardness:</span>
+                <span id="dossier-test-mohs" class="font-semibold text-ink-900">Untested in Bench Lab</span>
+              </div>
+              <div class="p-3 border border-parchment-300 bg-parchment-50">
+                <span class="text-ink-500 text-[10px] block uppercase">Porcelain Plate Streak:</span>
+                <span id="dossier-test-streak" class="font-semibold text-ink-900">Untested on Porcelain</span>
+              </div>
+              <div class="p-3 border border-parchment-300 bg-parchment-50">
+                <span class="text-ink-500 text-[10px] block uppercase">Archival Authentication:</span>
+                <span id="dossier-test-coa" class="font-semibold text-ink-900">Awaiting Curatorial Seal</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Dossier Interactive Action Dock -->
+        <div class="pt-6 flex flex-wrap items-center justify-between gap-3 font-mono text-xs">
+          <div class="flex flex-wrap items-center gap-2">
+            <button onclick="actionDossierScratch()" class="px-3 py-2 border border-ink-950 bg-parchment-100 hover:bg-parchment-200 transition">
+              🔬 Mohs Stylus Scratch
+            </button>
+            <button onclick="actionDossierStreak()" class="px-3 py-2 border border-ink-950 bg-parchment-100 hover:bg-parchment-200 transition">
+              📜 Porcelain Streak Tile
+            </button>
+            <button onclick="actionDossierTrim()" id="btn-dossier-trim" class="px-3 py-2 border border-ink-950 bg-parchment-100 hover:bg-parchment-200 transition">
+              ⚙️ Diamond Saw Trim ($125)
+            </button>
+            <button onclick="actionDossierIssueCoa()" id="btn-dossier-coa" class="px-3 py-2 border-2 border-archival-red text-archival-red font-bold hover:bg-archival-red hover:text-parchment-25 transition">
+              🏛️ Issue Archival COA
+            </button>
+          </div>
+
+          <div class="flex items-center space-x-2">
+            <button onclick="openMultiPodiumConsignModal()" class="px-4 py-2 border-2 border-ink-950 bg-ink-950 text-parchment-25 font-bold hover:bg-ink-800 transition">
+              Consign to Live Podium &rarr;
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- 3. MULTI-PODIUM SIMULTANEOUS LIVE AUCTION HALL (4 PODIUMS) -->
+    <section id="panel-auction" class="tab-panel hidden space-y-6">
+      
+      <!-- Auction Hall Header -->
+      <div class="paper-card p-6 border-2 border-ink-950">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center space-x-2">
+              <span class="stamp-badge border-ink-950 text-ink-950">Tucson &amp; Denver International Exchange</span>
+              <span class="text-xs font-mono text-ink-500 uppercase tracking-widest">Simultaneous 4-Podium Ring</span>
+            </div>
+            <h2 class="font-serif text-3xl sm:text-4xl font-bold text-ink-950 mt-1">Live Multi-Podium Mineral Exchange</h2>
+            <p class="text-sm font-serif italic text-ink-700 mt-1 max-w-3xl">
+              Four concurrent auction blocks running simultaneously. Consign up to 4 specimens at the exact same time. Strict anti-self bidding safeguards prevent bidding on your own consigned property while syndicates compete.
+            </p>
+          </div>
+
+          <button onclick="openMultiPodiumConsignModal()" class="px-5 py-3 border-2 border-ink-950 bg-ink-950 text-parchment-25 font-mono text-xs uppercase tracking-wider font-bold hover:bg-ink-800 transition shadow-[3px_3px_0px_#737373]">
+            &plus; Consign Specimen to Open Podium
+          </button>
+        </div>
+      </div>
+
+      <!-- THE 4 PODIUMS GRID -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- PODIUM ALPHA -->
+        <div id="podium-card-0" class="paper-card p-5 border-2 border-ink-950 flex flex-col justify-between shadow-[3px_3px_0px_#0a0a0a]">
+          <!-- Loaded via script -->
+        </div>
+
+        <!-- PODIUM BETA -->
+        <div id="podium-card-1" class="paper-card p-5 border-2 border-ink-950 flex flex-col justify-between shadow-[3px_3px_0px_#0a0a0a]">
+          <!-- Loaded via script -->
+        </div>
+
+        <!-- PODIUM GAMMA -->
+        <div id="podium-card-2" class="paper-card p-5 border-2 border-ink-950 flex flex-col justify-between shadow-[3px_3px_0px_#0a0a0a]">
+          <!-- Loaded via script -->
+        </div>
+
+        <!-- PODIUM DELTA -->
+        <div id="podium-card-3" class="paper-card p-5 border-2 border-ink-950 flex flex-col justify-between shadow-[3px_3px_0px_#0a0a0a]">
+          <!-- Loaded via script -->
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- 4. DIAGNOSTIC PREP LAB & HYDRAULIC GEODE CRACKER -->
+    <section id="panel-lab" class="tab-panel hidden space-y-6">
+      
+      <div class="paper-card p-6 border-2 border-ink-950">
+        <h2 class="font-serif text-3xl font-bold text-ink-950">Geological Testing &amp; Diagnostic Workshop</h2>
+        <p class="text-sm font-serif italic text-ink-700 mt-1 max-w-3xl">
+          Calibrated Mohs hardness stylus needles, unglazed porcelain streak plates, diamond lapidary trim saw, and hydraulic basalt geode cracking station.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <!-- Mechanical Geode Cracking Station -->
+        <div class="paper-card p-6 border-2 border-ink-950 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between pb-3 border-b border-parchment-300">
+              <h3 class="font-serif text-2xl font-bold text-ink-950">Hydraulic Geode Cracker Vise</h3>
+              <span id="lab-geode-count-badge" class="stamp-badge border-ink-950 text-ink-950">0 Unopened Nodules</span>
+            </div>
+            
+            <p class="text-xs font-mono text-ink-700 mt-3 leading-relaxed">
+              Seat an intact volcanic basalt nodule inside the hardened steel perimeter chain. Pulling the high-pressure hydraulic ram fractures the outer crust along natural stress fractures, exposing the hollow interior druse cavity (Amethyst Cathedral or Golden Citrine).
+            </p>
+
+            <div id="geode-crack-readout" class="mt-4 p-4 bg-parchment-100 border border-parchment-300 text-xs font-mono text-ink-900 min-h-[120px] flex items-center justify-center text-center italic">
+              No geode currently seated in the cracker vise. Discover unopened nodules in the Field Strata Grid!
+            </div>
+          </div>
+
+          <button onclick="crackGeodeVise()" id="btn-crack-vise" class="w-full mt-4 py-3 border-2 border-ink-950 bg-ink-950 text-parchment-25 font-mono text-xs uppercase tracking-wider font-bold hover:bg-ink-800 transition">
+            Engage Hydraulic Ram &rarr; Fracture Geode Nodule!
+          </button>
+        </div>
+
+        <!-- Testing Bench Suite -->
+        <div class="paper-card p-6 border-2 border-ink-950 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between pb-3 border-b border-parchment-300">
+              <h3 class="font-serif text-2xl font-bold text-ink-950">Bench Diagnostics &amp; Lapidary Trim</h3>
+              <span class="text-xs font-mono text-ink-500">Yale Peabody Calibrated</span>
+            </div>
+
+            <div class="mt-4 space-y-3 font-mono text-xs">
+              <div class="p-3 bg-parchment-100 border border-parchment-300 flex items-center justify-between">
+                <div>
+                  <div class="font-bold text-ink-950">Diamond Continuous-Rim Saw</div>
+                  <div class="text-[10px] text-ink-500">Trims host matrix gangue to raise specimen Grade ($125 fee)</div>
+                </div>
+                <button onclick="actionDossierTrim()" class="px-3 py-1.5 border border-ink-950 bg-parchment-50 hover:bg-parchment-200">
+                  Trim Active ($125)
+                </button>
+              </div>
+
+              <div class="p-3 bg-parchment-100 border border-parchment-300 flex items-center justify-between">
+                <div>
+                  <div class="font-bold text-ink-950">Calibrated Mohs Stylus Needles (1 - 10)</div>
+                  <div class="text-[10px] text-ink-500">Needles scratch test against active dossier specimen</div>
+                </div>
+                <button onclick="actionDossierScratch()" class="px-3 py-1.5 border border-ink-950 bg-parchment-50 hover:bg-parchment-200">
+                  Run Scratch Test
+                </button>
+              </div>
+
+              <div class="p-3 bg-parchment-100 border border-parchment-300 flex items-center justify-between">
+                <div>
+                  <div class="font-bold text-ink-950">Unglazed Porcelain Streak Plate</div>
+                  <div class="text-[10px] text-ink-500">Reveals true powdered mineral color streak</div>
+                </div>
+                <button onclick="actionDossierStreak()" class="px-3 py-1.5 border border-ink-950 bg-parchment-50 hover:bg-parchment-200">
+                  Test Streak
+                </button>
+              </div>
+            </div>
+
+            <div id="lab-diagnostic-log" class="mt-4 p-3 bg-parchment-50 border border-parchment-300 text-xs font-mono text-ink-700 min-h-[50px] flex items-center">
+              Diagnostic bench ready. Choose a test to execute against the active dossier.
+            </div>
+          </div>
+
+          <button onclick="switchTab('dossier')" class="w-full mt-4 py-2.5 border border-ink-950 bg-parchment-100 hover:bg-parchment-200 font-mono text-xs uppercase font-bold text-ink-950 transition">
+            View Active Dossier File &rarr;
+          </button>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- 5. SPECIMEN LEDGER & ARCHIVAL MATRIX -->
+    <section id="panel-inventory" class="tab-panel hidden space-y-6">
+      
+      <!-- Filter & Search Toolbar -->
+      <div class="paper-card p-5 border-2 border-ink-950 font-mono text-xs">
+        <div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+          
+          <div class="flex flex-wrap items-center gap-2 flex-1">
+            <input type="text" id="ledger-search-input" oninput="renderSpecimenLedger()" placeholder="Search accession, name, formula, locality..." class="bg-parchment-100 border border-ink-950 text-ink-950 p-2 font-mono text-xs w-64 focus:outline-none">
+
+            <select id="ledger-filter-class" onchange="renderSpecimenLedger()" class="bg-parchment-100 border border-ink-950 text-ink-950 p-2 font-mono">
+              <option value="ALL">All Classes</option>
+              <option value="Gemstone">Precious Gemstones</option>
+              <option value="Native Element">Native Metals</option>
+              <option value="Meteorite">Space Rocks &amp; Meteorites</option>
+              <option value="Phenomenal">Phenomenal &amp; Rare Minerals</option>
+              <option value="Geode">Hollow Geodes</option>
+            </select>
+
+            <select id="ledger-filter-coa" onchange="renderSpecimenLedger()" class="bg-parchment-100 border border-ink-950 text-ink-950 p-2 font-mono">
+              <option value="ALL">All Provenances</option>
+              <option value="COA">COA Certified Only</option>
+              <option value="UNTESTED">Untested Only</option>
+              <option value="G10">G10 Museum Grade Only</option>
+            </select>
+
+            <select id="ledger-sort" onchange="renderSpecimenLedger()" class="bg-parchment-100 border border-ink-950 text-ink-950 p-2 font-mono">
+              <option value="val-desc">Sort: Value (High &rarr; Low)</option>
+              <option value="val-asc">Sort: Value (Low &rarr; High)</option>
+              <option value="mohs-desc">Sort: Mohs Hardness</option>
+              <option value="name-asc">Sort: Taxon Name (A-Z)</option>
+            </select>
+          </div>
+
+          <div class="flex items-center space-x-4 border-t lg:border-t-0 pt-3 lg:pt-0 border-parchment-300">
+            <div>Catalogued: <strong id="ledger-count-val" class="text-ink-950">0</strong></div>
+            <div>Portfolio: <strong id="ledger-total-val" class="text-ink-950">$0</strong></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Tabular Ledger Cards Container -->
+      <div class="paper-card border-2 border-ink-950 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs font-mono">
+            <thead class="bg-parchment-200 border-b-2 border-ink-950 text-ink-950 uppercase tracking-wider text-[11px]">
+              <tr>
+                <th class="p-3.5">Accession Code</th>
+                <th class="p-3.5">Taxon &amp; Geological Origin</th>
+                <th class="p-3.5">Class / Chemistry</th>
+                <th class="p-3.5">Hardness / SG</th>
+                <th class="p-3.5">Curatorial Grade</th>
+                <th class="p-3.5">Appraisal</th>
+                <th class="p-3.5 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="ledger-table-body" class="divide-y divide-parchment-300 bg-parchment-50">
+              <!-- Populated dynamically -->
+            </tbody>
+          </table>
+        </div>
+
+        <div id="ledger-empty" class="p-12 text-center text-xs font-mono text-ink-500">
+          No specimens in active catalog matching criteria.
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 6. PEABODY CURATORIAL COMPENDIUM -->
+    <section id="panel-encyclopedia" class="tab-panel hidden space-y-6">
+      
+      <div class="paper-card p-6 border-2 border-ink-950">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center space-x-2">
+              <span class="stamp-badge border-ink-950 text-ink-950">Archival Monograph Reference</span>
+              <span class="text-xs font-mono text-ink-500 uppercase tracking-widest">Yale Peabody Mineralogical Compendium</span>
+            </div>
+            <h2 class="font-serif text-3xl font-bold text-ink-950 mt-1">Curatorial Compendium of Minerals, Gems &amp; Meteorites</h2>
+            <p class="text-sm font-serif italic text-ink-700 mt-1 max-w-3xl">
+              Scientific monographs covering 28 geological discoveries spanning diamonds, pallasite meteorites, trapiche emeralds, native metals, and radioactive / rare phenomenal minerals.
+            </p>
+          </div>
+
+          <div class="w-full md:w-80">
+            <input type="text" id="comp-search" oninput="renderCompendiumGrid()" placeholder="Filter species, formula, class, notes..." class="w-full bg-parchment-100 border-2 border-ink-950 text-ink-950 text-xs p-2.5 font-mono focus:outline-none">
+          </div>
+        </div>
+      </div>
+
+      <!-- Compendium Cards Grid -->
+      <div id="comp-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Rendered from PEABODY_SPECIES -->
+      </div>
+
+    </section>
+
+    <!-- 7. GOD MODE CURATORIAL OVERRIDE SUITE -->
+    <section id="panel-godmode" class="tab-panel hidden space-y-6">
+      <div class="paper-card p-6 border-2 border-archival-red">
+        <div class="flex items-center space-x-2 pb-3 border-b border-parchment-300">
+          <span class="stamp-badge border-archival-red text-archival-red">Curatorial Administrative Console</span>
+          <h2 class="font-serif text-2xl font-bold text-archival-red">Developer God Mode Suite</h2>
+        </div>
+        <p class="text-xs font-mono text-ink-700 mt-2">
+          Test harnesses for instantaneous capital injection, synthesis of legendary museum specimens, automated provenance certification, and seismic grid clear.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6 font-mono text-xs">
+          
+          <div class="p-4 bg-parchment-100 border border-parchment-300 space-y-2">
+            <strong class="text-ink-950 uppercase block">1. Research Endowment</strong>
+            <p class="text-[11px] text-ink-500">Inject +$100,000 liquid capital directly into your expedition ledger.</p>
+            <button onclick="godAddFunds(100000)" class="w-full py-2 border border-ink-950 bg-ink-950 text-parchment-25 font-bold uppercase hover:bg-ink-800">
+              +$100,000 Capital
+            </button>
+          </div>
+
+          <div class="p-4 bg-parchment-100 border border-parchment-300 space-y-2">
+            <strong class="text-ink-950 uppercase block">2. Seymchan Pallasite</strong>
+            <p class="text-[11px] text-ink-500">Synthesize an authenticated G10 Seymchan Pallasite slab with golden peridot.</p>
+            <button onclick="godSpawnPallasite()" class="w-full py-2 border border-ink-950 bg-ink-950 text-parchment-25 font-bold uppercase hover:bg-ink-800">
+              Spawn Pallasite Slab
+            </button>
+          </div>
+
+          <div class="p-4 bg-parchment-100 border border-parchment-300 space-y-2">
+            <strong class="text-ink-950 uppercase block">3. Monster 4.5kg Gold</strong>
+            <p class="text-[11px] text-ink-500">Synthesize a solid 4,500g alluvial native gold boulder (100% solid Au).</p>
+            <button onclick="godSpawnGold()" class="w-full py-2 border border-ink-950 bg-ink-950 text-parchment-25 font-bold uppercase hover:bg-ink-800">
+              Spawn 4.5kg Gold
+            </button>
+          </div>
+
+          <div class="p-4 bg-parchment-100 border border-parchment-300 space-y-2">
+            <strong class="text-ink-950 uppercase block">4. Seismic Grid Strike</strong>
+            <p class="text-[11px] text-ink-500">Instantly detonate and excavate all 64 cells of the active strata grid at once.</p>
+            <button onclick="godClearGrid()" class="w-full py-2 border border-archival-red text-archival-red font-bold uppercase hover:bg-archival-red hover:text-parchment-25">
+              Seismic Grid Reveal
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= MODALS & ARCHIVAL PROVENANCE ================= -->
+
+  <!-- OFFICIAL CMA CERTIFICATE MODAL -->
+  <div id="modal-cma-cert" class="fixed inset-0 z-50 bg-ink-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="paper-card p-8 max-w-xl w-full border-4 border-ink-950 shadow-[6px_6px_0px_#0a0a0a] relative bg-parchment-50">
+      <div class="border-2 border-dashed border-ink-950 p-6 text-center">
+        
+        <div class="flex items-center justify-between pb-3 border-b border-parchment-300">
+          <span class="stamp-badge stamp-certified">Official Archival Provenance</span>
+          <span id="cert-serial" class="font-mono text-xs font-bold text-archival-red">CMA-2026-9041</span>
+        </div>
+
+        <h3 class="font-serif text-3xl font-bold text-ink-950 mt-4 uppercase">Certificate of Authenticity</h3>
+        <p class="font-serif italic text-sm text-ink-700 mt-0.5">Certified Mineralogical Authentication &middot; Yale Peabody Register</p>
+
+        <div class="my-6 text-left font-mono text-xs space-y-2 bg-parchment-100 p-4 border border-parchment-300">
+          <div><span class="text-ink-500">Specimen Taxon:</span> <strong id="cert-name" class="text-ink-950 text-sm">Kimberlite Octahedral Diamond</strong></div>
+          <div><span class="text-ink-500">Locality Origin:</span> <span id="cert-locality" class="text-ink-900">Kimberley Diatreme Pipe, South Africa</span></div>
+          <div><span class="text-ink-500">Formula &amp; Class:</span> <span id="cert-formula" class="text-ink-900">C (Pure Carbon) &middot; Precious Gemstone</span></div>
+          <div><span class="text-ink-500">Mohs Hardness:</span> <strong id="cert-mohs" class="text-ink-950">10.0 Mohs</strong></div>
+          <div><span class="text-ink-500">Curatorial Grade:</span> <span id="cert-grade" class="stamp-badge border-ink-950 text-ink-950">G10 Museum Grade</span></div>
+        </div>
+
+        <div class="pt-4 border-t border-parchment-300 flex items-center justify-between">
+          <div class="text-left font-serif">
+            <div class="text-xs font-bold text-ink-950">Dr. Peabody Vance, F.G.S.</div>
+            <div class="text-[10px] font-mono text-ink-500 uppercase">Keeper of Mineralogy &amp; Meteorites</div>
+          </div>
+
+          <button onclick="closeCmaModal()" class="px-5 py-2 border-2 border-ink-950 bg-ink-950 text-parchment-25 font-mono text-xs font-bold hover:bg-ink-800 transition">
+            Close &amp; File Certificate
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- MULTI-PODIUM CONSIGNMENT MODAL -->
+  <div id="modal-consign" class="fixed inset-0 z-50 bg-ink-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="paper-card p-6 max-w-md w-full border-2 border-ink-950 shadow-[4px_4px_0px_#0a0a0a] bg-parchment-50 font-mono text-xs">
+      <div class="flex items-center justify-between pb-3 border-b border-parchment-300">
+        <h3 class="font-serif text-xl font-bold text-ink-950">Consign to Exchange Block</h3>
+        <button onclick="closeMultiPodiumConsignModal()" class="text-ink-500 hover:text-ink-950">[ESC]</button>
+      </div>
+
+      <div class="my-4 space-y-3">
+        <div>
+          <label class="text-ink-500 block text-[10px] uppercase mb-1">Select Consignment Podium:</label>
+          <select id="modal-consign-podium-idx" class="w-full bg-parchment-100 border border-ink-950 text-ink-950 p-2 font-mono">
+            <option value="0">Podium Alpha</option>
+            <option value="1">Podium Beta</option>
+            <option value="2">Podium Gamma</option>
+            <option value="3">Podium Delta</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-ink-500 block text-[10px] uppercase mb-1">Select Catalogued Specimen:</label>
+          <select id="modal-consign-specimen-select" onchange="onConsignModalSelectChange(this.value)" class="w-full bg-parchment-100 border border-ink-950 text-ink-950 p-2 font-mono">
+            <!-- Dynamically populated -->
+          </select>
+        </div>
+
+        <div>
+          <label class="text-ink-500 block text-[10px] uppercase mb-1">Reserve Price ($):</label>
+          <input type="number" id="modal-consign-reserve" value="5000" min="50" step="50" class="w-full bg-parchment-100 border border-ink-950 text-ink-950 p-2 font-mono">
+          <span class="text-[10px] text-ink-500 block mt-1">Recommended: 80% of appraised value. Bidders respect reserve.</span>
+        </div>
+      </div>
+
+      <div class="pt-4 border-t border-parchment-300 flex justify-end space-x-2">
+        <button onclick="closeMultiPodiumConsignModal()" class="px-3 py-1.5 border border-ink-950 bg-parchment-100 hover:bg-parchment-200">
+          Cancel
+        </button>
+        <button onclick="submitConsignmentModal()" class="px-4 py-1.5 border-2 border-ink-950 bg-ink-950 text-parchment-25 font-bold hover:bg-ink-800">
+          Mount to Podium &rarr;
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed bottom-4 right-4 z-50 space-y-2 pointer-events-none"></div>
+
+  <!-- ================= SCRIPT & CORE ENGINE ================= -->
+  <script>
+    /* ==========================================================================
+       GEO DUDES: FIELD DOSSIER & MINERAL LEDGER &middot; CURATORIAL ARCHITECTURE
+       ========================================================================== */
+
+    // --- Audio Feedback Synthesizer ---
+    let audioCtx = null;
+    let soundEnabled = true;
+
+    function initAudio() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    function playSound(type) {
+      if (!soundEnabled) return;
+      try {
+        initAudio();
+        if (!audioCtx) return;
+        const now = audioCtx.currentTime;
+
+        if (type === 'strike') {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(140, now);
+          osc.frequency.exponentialRampToValueAtTime(35, now + 0.12);
+          gain.gain.setValueAtTime(0.3, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.12);
+        } else if (type === 'certified') {
+          [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, now + idx * 0.05);
+            gain.gain.setValueAtTime(0.18, now + idx * 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5 + idx * 0.05);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(now + idx * 0.05);
+            osc.stop(now + 0.6 + idx * 0.05);
+          });
+        } else if (type === 'crack') {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(190, now);
+          osc.frequency.exponentialRampToValueAtTime(25, now + 0.22);
+          gain.gain.setValueAtTime(0.4, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.22);
+        } else if (type === 'gavel') {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(210, now);
+          gain.gain.setValueAtTime(0.35, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.18);
+        }
+      } catch (e) {
+        // audio policy safe
+      }
+    }
+
+    document.getElementById('btn-sound').addEventListener('click', () => {
+      soundEnabled = !soundEnabled;
+      document.getElementById('btn-sound').textContent = soundEnabled ? '[AUDIO: ON]' : '[AUDIO: OFF]';
+      showToast(soundEnabled ? 'Synthesizer Audio Enabled' : 'Audio Muted');
+    });
+
+    function showToast(msg, type = 'info') {
+      const shelf = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'px-4 py-2.5 border-2 border-ink-950 bg-parchment-50 shadow-[3px_3px_0px_#0a0a0a] text-xs font-mono transition-all transform duration-200 opacity-0 translate-y-2 pointer-events-auto flex items-center space-x-2 text-ink-950';
+      toast.innerHTML = `<span>&bull;</span><span>${msg}</span>`;
+      shelf.appendChild(toast);
+
+      requestAnimationFrame(() => toast.classList.remove('opacity-0', 'translate-y-2'));
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 250);
+      }, 3200);
+    }
+
+    // --- EXPANDED CURATORIAL SPECIES ROSTER (28 DETAILED TAXA) ---
+    const PEABODY_SPECIES = [
+      // 1. PRECIOUS GEMSTONES
+      {
+        id: 'diamond_octahedral',
+        name: 'Kimberlite Octahedral Diamond',
+        formula: 'C (Pure Carbon)',
+        mineralClass: 'Gemstone',
+        crystalSystem: 'Isometric',
+        spaceGroup: 'Fd3m',
+        mohs: 10.0,
+        sg: 3.52,
+        ri: '2.417',
+        dispersion: '0.044',
+        cleavage: 'Perfect {111} Octahedral',
+        fracture: 'Conchoidal',
+        streak: 'None (Scratches Porcelain)',
+        optics: 'Isotropic &middot; Blue Fluorescent',
+        baseVal: 32000,
+        locality: 'Kimberley Diatreme Pipe, Northern Cape, South Africa',
+        genesis: 'Crystallized in the deep Archean mantle lithosphere under crushing pressures (>5 GPa) and temperatures exceeding 1,200°C. Transported violently to Earth\'s surface in volatile-charged supersonic kimberlite magma eruptions.',
+        notes: 'A pristine, sharp-edged octahedral crystal exhibiting classic trigonal growth hillocks on its glassy adamantine faces. Exceptional water-white transparency with fierce optical dispersion and vivid sky-blue fluorescence under longwave UV.'
+      },
+      {
+        id: 'ruby_burma',
+        name: 'Pigeon\'s Blood Burmese Ruby',
+        formula: 'Al2O3 : Cr3+',
+        mineralClass: 'Gemstone',
+        crystalSystem: 'Trigonal',
+        spaceGroup: 'R-3c',
+        mohs: 9.0,
+        sg: 4.02,
+        ri: '1.762 - 1.770',
+        dispersion: '0.018',
+        cleavage: 'None (Basal Parting)',
+        fracture: 'Conchoidal to Uneven',
+        streak: 'White',
+        optics: 'Uniaxial (-) &middot; Strong Red UV Glow',
+        baseVal: 28500,
+        locality: 'Mogok Stone Tract, Shan State, Myanmar (Burma)',
+        genesis: 'Formed in regional contact marble skarns during the collision of the Indian and Eurasian tectonic plates. Low-iron marble host rock permits the chromium activator to radiate pure fiery red fluorescence without quenching.',
+        notes: 'The undisputed monarch of corundum. Boasts the revered "pigeon\'s blood" crimson saturation caused by trace chromium, illuminated from within by intense natural fluorescence that glows fiercely even under shaded ambient daylight.'
+      },
+      {
+        id: 'sapphire_kashmir',
+        name: 'Kashmir Cornflower Blue Sapphire',
+        formula: 'Al2O3 : Fe2+, Ti4+',
+        mineralClass: 'Gemstone',
+        crystalSystem: 'Trigonal',
+        spaceGroup: 'R-3c',
+        mohs: 9.0,
+        sg: 4.00,
+        ri: '1.762 - 1.770',
+        dispersion: '0.018',
+        cleavage: 'None (Parting along {0001})',
+        fracture: 'Conchoidal',
+        streak: 'White',
+        optics: 'Dichroic: Royal Blue / Violet-Blue',
+        baseVal: 27000,
+        locality: 'Zanskar Range, Padar District, Kashmir, India',
+        genesis: 'Generated along high-altitude hydrothermal pegmatite dikes intruding actinolite-tremolite schists. Slow alpine cooling produced microscopic tourmaline and rutile silk dust that scatters light.',
+        notes: 'Legendary velvety cornflower-blue hue with a soft, ethereal haziness caused by sub-microscopic rutile dust. Unheated and untreated, representing the rarest and most prized blue sapphire provenance in recorded history.'
+      },
+      {
+        id: 'emerald_trapiche',
+        name: 'Colombian Trapiche Emerald',
+        formula: 'Be3Al2(SiO3)6 : Cr, V',
+        mineralClass: 'Gemstone',
+        crystalSystem: 'Hexagonal',
+        spaceGroup: 'P6/mcc',
+        mohs: 7.8,
+        sg: 2.72,
+        ri: '1.577 - 1.583',
+        dispersion: '0.014',
+        cleavage: 'Imperfect Basal {0001}',
+        fracture: 'Conchoidal',
+        streak: 'White',
+        optics: 'Uniaxial (-) &middot; Strong Green Pleochroism',
+        baseVal: 24000,
+        locality: 'Muzo Emerald Basin, Boyacá Department, Colombia',
+        genesis: 'Hydrothermal brines saturated with beryllium circulated through organic-rich black shales. Carbonaceous albite and lutite matrix formed a fixed six-spoke wheel structure during growth sector zoning.',
+        notes: 'A geometric miracle of nature: a central hexagonal emerald core from which six distinct radial spokes of black carbonaceous shale divide six pristine transparent green emerald gem sectors, mirroring an antique sugarcane gear wheel.'
+      },
+      {
+        id: 'alexandrite_ural',
+        name: 'Ural Color-Shift Alexandrite',
+        formula: 'BeAl2O4 : Cr3+',
+        mineralClass: 'Gemstone',
+        crystalSystem: 'Orthorhombic',
+        spaceGroup: 'Pnma',
+        mohs: 8.5,
+        sg: 3.73,
+        ri: '1.745 - 1.754',
+        dispersion: '0.015',
+        cleavage: 'Distinct {010}',
+        fracture: 'Conchoidal',
+        streak: 'White',
+        optics: 'Trichroic: Emerald Green / Ruby Red / Amber',
+        baseVal: 29500,
+        locality: 'Tokovaya River, Malyshevo, Ural Mountains, Russia',
+        genesis: 'Formed where granitic pegmatites rich in rare beryllium contacted ultramafic peridotite country rock rich in chromium, an extraordinarily improbable geochemical juxtaposition.',
+        notes: '"Emerald by day, ruby by night." Exhibits a dramatic 100% color change from deep teal-emerald in natural daylight to saturated raspberry ruby-red under incandescent candlelight, due to a narrow transmission window in the yellow spectrum.'
+      },
+      {
+        id: 'opal_black_harlequin',
+        name: 'Lightning Ridge Harlequin Black Opal',
+        formula: 'SiO2 &middot; nH2O (Amorphous)',
+        mineralClass: 'Gemstone',
+        crystalSystem: 'Amorphous (Sub-microscopic spheres)',
+        spaceGroup: 'None',
+        mohs: 6.0,
+        sg: 2.15,
+        ri: '1.450',
+        dispersion: 'None',
+        cleavage: 'None',
+        fracture: 'Conchoidal',
+        streak: 'White',
+        optics: 'Diffraction Play-of-Color',
+        baseVal: 22000,
+        locality: 'Lightning Ridge, New South Wales, Australia',
+        genesis: 'Cretaceous weathering dissolved silicate rocks, creating colloidal silica gel that trickled into cavities and fossil voids in ironstone, slowly solidifying into ordered uniform sphere lattices over millions of years.',
+        notes: 'Pitch-black carbonaceous potch body tone backing a vivid broad-pattern harlequin play-of-color. Geometric mosaic tiles of blazing spectral red, cobalt blue, and neon green flash dynamically across the face.'
+      },
+      {
+        id: 'opal_welo_fire',
+        name: 'Ethiopian Welo Fire Opal',
+        formula: 'SiO2 &middot; nH2O',
+        mineralClass: 'Gemstone',
+        crystalSystem: 'Amorphous',
+        spaceGroup: 'None',
+        mohs: 5.8,
+        sg: 2.08,
+        ri: '1.430',
+        dispersion: 'None',
+        cleavage: 'None',
+        fracture: 'Conchoidal',
+        streak: 'White',
+        optics: 'Hydrophane Translucency &middot; Neon Play',
+        baseVal: 12500,
+        locality: 'Wegel Tena, Wollo Province, Ethiopia',
+        genesis: 'Volcanic rhyolitic ignimbrite ash deposits provided silica mobilized by low-temperature meteoric waters, depositing jelly-like nodules in gas vesicles.',
+        notes: 'Crystal-clear fiery honeycomb play-of-color suspended in an amber-translucent jelly body. Exhibits true hydrophane properties and blinding neon green and tangerine spectral rolling flashes.'
+      },
+      {
+        id: 'topaz_imperial',
+        name: 'Ouro Preto Imperial Topaz',
+        formula: 'Al2SiO4(F,OH)2',
+        mineralClass: 'Gemstone',
+        crystalSystem: 'Orthorhombic',
+        spaceGroup: 'Pbnm',
+        mohs: 8.0,
+        sg: 3.53,
+        ri: '1.619 - 1.627',
+        dispersion: '0.014',
+        cleavage: 'Perfect Basal {001}',
+        fracture: 'Subconchoidal',
+        streak: 'White',
+        optics: 'Biaxial (+) &middot; Salmon Pleochroism',
+        baseVal: 16500,
+        locality: 'Rodrigo Silva, Ouro Preto, Minas Gerais, Brazil',
+        genesis: 'High-temperature hydrothermal veins cutting hydrothermally altered carbonates and phyllites, enriched with fluorine and trace chromium.',
+        notes: 'Chiseled prismatic crystal prism terminating in lustrous pyramidal faces. Shimmers in prized sherry-cognac and reddish-salmon tones with glassy vitreous luster.'
+      },
+      {
+        id: 'tanzanite_merelani',
+        name: 'Merelani Trichroic Tanzanite',
+        formula: 'Ca2Al3(SiO4)3(OH) : V',
+        mineralClass: 'Gemstone',
+        crystalSystem: 'Orthorhombic',
+        spaceGroup: 'Pnma',
+        mohs: 6.5,
+        sg: 3.35,
+        ri: '1.691 - 1.700',
+        dispersion: '0.030',
+        cleavage: 'Perfect {010}',
+        fracture: 'Uneven',
+        streak: 'White',
+        optics: 'Pleochroic: Ultramarine / Purple / Bronze',
+        baseVal: 18500,
+        locality: 'Merelani Hills, Lelatema Mountains, Arusha, Tanzania',
+        genesis: 'Metamorphic hydrothermal events during the Neoproterozoic East African Orogeny, where vanadium mobilized from marine graphitic kyanite gneisses entered zoisite crystals.',
+        notes: 'Found in only one 7-square-kilometer zone on Earth. Pristine, unheated trichroic crystal tower shifting between royal cobalt, velvet magenta, and burnt honey along its three crystallographic axes.'
+      },
+      {
+        id: 'paraiba_tourmaline',
+        name: 'Paraíba Neon Copper Tourmaline',
+        formula: 'Na(Li,Al)3Al6(BO3)3Si6O18(OH)4 : Cu, Mn',
+        mineralClass: 'Gemstone',
+        crystalSystem: 'Trigonal',
+        spaceGroup: 'R3m',
+        mohs: 7.5,
+        sg: 3.06,
+        ri: '1.624 - 1.644',
+        dispersion: '0.017',
+        cleavage: 'None',
+        fracture: 'Uneven to Conchoidal',
+        streak: 'White',
+        optics: 'Electric Neon Turquoise Glow',
+        baseVal: 35000,
+        locality: 'Mina da Batalha, São José da Batalha, Paraíba, Brazil',
+        genesis: 'Extreme fractionation of granitic pegmatite magmas where copper—an element virtually never present in granites—was hydrothermally introduced into elbaite.',
+        notes: 'The most electrifying gemstone in mineralogy: an inner Caribbean swimming-pool turquoise glow fueled by trace copper, creating a luminescent neon intensity that appears artificially lit from within.'
+      },
+
+      // 2. NATIVE METALS & HEAVY ORES
+      {
+        id: 'gold_monster_nugget',
+        name: 'Monster Solid Gold Alluvial Nugget',
+        formula: 'Au (99.8% Pure Metal)',
+        mineralClass: 'Native Element',
+        crystalSystem: 'Isometric',
+        spaceGroup: 'Fm-3m',
+        mohs: 2.8,
+        sg: 19.30,
+        ri: 'Opaque Metallic',
+        dispersion: 'None',
+        cleavage: 'None (Highly Malleable)',
+        fracture: 'Hackly &middot; Ductile',
+        streak: 'Golden-Yellow Metallic',
+        optics: 'Full Specular Metallic Reflection',
+        baseVal: 48000,
+        locality: 'Eagle\'s Nest Mine, Placer Co., Sierra Nevada, California',
+        genesis: 'Precipitated from mesothermal quartz vein fluids along the Melones Fault Zone, then liberated by millions of years of Tertiary river weathering and concentrated in bedrock potholes.',
+        notes: 'A monolithic, multi-kilogram 100% solid pure gold alluvial boulder. Free of quartz gangue rock, displaying hammered lobes, melted river folds, and recrystallized isometric octahedral faces in the shaded crevices.'
+      },
+      {
+        id: 'copper_boulder_keweenaw',
+        name: 'Massive Native Copper Boulder',
+        formula: 'Cu',
+        mineralClass: 'Native Element',
+        crystalSystem: 'Isometric',
+        spaceGroup: 'Fm-3m',
+        mohs: 3.0,
+        sg: 8.94,
+        ri: 'Opaque Metallic',
+        dispersion: 'None',
+        cleavage: 'None (Ductile)',
+        fracture: 'Hackly',
+        streak: 'Copper-Red Metallic',
+        optics: 'Metallic with Green Malachite Patina',
+        baseVal: 18500,
+        locality: 'Keweenaw Rift Peninsula, Lake Superior, Michigan',
+        genesis: 'Mesoproterozoic basaltic flood lavas cooled and were permeated by hydrothermal fluids that leached copper from the Portage Lake volcanics, filling amygdules and fault fractures.',
+        notes: 'An immense, heavy chunk of pure solid native copper with torn ductile wings and step-fractured planar facets, accented with a natural emerald-green malachite and chrysocolla verdigris patina.'
+      },
+      {
+        id: 'silver_wire_kongsberg',
+        name: 'Native Silver Herringbone Wire Mass',
+        formula: 'Ag',
+        mineralClass: 'Native Element',
+        crystalSystem: 'Isometric',
+        spaceGroup: 'Fm-3m',
+        mohs: 2.7,
+        sg: 10.49,
+        ri: 'Opaque Metallic',
+        dispersion: 'None',
+        cleavage: 'None (Malleable)',
+        fracture: 'Hackly',
+        streak: 'Silver-White Metallic',
+        optics: 'Specular Metallic with Acanthite Tarnish',
+        baseVal: 19000,
+        locality: 'Kongsberg Silver Mining District, Buskerud, Norway',
+        genesis: 'Precipitated from low-temperature hydrothermal calcite-fluorite veins cutting Precambrian fahlbands, driven by methane gas reductions.',
+        notes: 'Dramatic, thick curling ropes and stepped herringbone wires of pure metallic silver. Contrast between bright reflective pewter planes and velvety jet-black acanthite shadows is of peerless museum caliber.'
+      },
+      {
+        id: 'platinum_nugget_ural',
+        name: 'Native Platinum Placer Nugget',
+        formula: 'Pt (with Fe, Ir, Os)',
+        mineralClass: 'Native Element',
+        crystalSystem: 'Isometric',
+        spaceGroup: 'Fm-3m',
+        mohs: 4.5,
+        sg: 21.45,
+        ri: 'Opaque Metallic',
+        dispersion: 'None',
+        cleavage: 'None',
+        fracture: 'Hackly',
+        streak: 'Shiny Steel-Gray',
+        optics: 'Intense Metallic Sheen',
+        baseVal: 26000,
+        locality: 'Nizhny Tagil, Ural Platinum Belt, Russia',
+        genesis: 'Segregated as immiscible metallic droplets in ultramafic dunite intrusions, weathered into ancient alluvial gravels.',
+        notes: 'Incredible heft in hand: specific gravity exceeds 21! Smooth water-rounded alluvial nugget of platinum alloyed with iridium, boasting an unmistakable steely gray luster.'
+      },
+      {
+        id: 'cinnabar_dolomite',
+        name: 'Cinnabar Crystals on Snow Dolomite',
+        formula: 'HgS',
+        mineralClass: 'Sulfide',
+        crystalSystem: 'Trigonal',
+        spaceGroup: 'P3121',
+        mohs: 2.2,
+        sg: 8.18,
+        ri: '2.905 - 3.256 (Extreme Adamantine)',
+        dispersion: '0.400',
+        cleavage: 'Perfect {10-10}',
+        fracture: 'Subconchoidal',
+        streak: 'Vivid Scarlet Red',
+        optics: 'Circular Dichroism',
+        baseVal: 14000,
+        locality: 'Tongren Mine, Guizhou Province, China',
+        genesis: 'Low-temperature epithermal hydrothermal deposits in dolomitic limestone near volcanic heat centers.',
+        notes: 'Gemmy, deep cochineal-scarlet rhombohedral cinnabar crystals perched in stark contrast upon brilliant snowy-white curved dolomite rhombs. Historically ground into Chinese imperial red vermilion ink.'
+      },
+      {
+        id: 'galena_cubes',
+        name: 'Stepped Galena Cubes with Marcasite',
+        formula: 'PbS',
+        mineralClass: 'Sulfide',
+        crystalSystem: 'Isometric',
+        spaceGroup: 'Fm-3m',
+        mohs: 2.6,
+        sg: 7.58,
+        ri: 'Opaque Metallic',
+        dispersion: 'None',
+        cleavage: 'Perfect Cubic {001}',
+        fracture: 'Subconchoidal',
+        streak: 'Lead Gray',
+        optics: 'Brilliant Lead Metallic Mirror',
+        baseVal: 9500,
+        locality: 'Sweetwater Mine, Viburnum Trend, Reynolds Co., Missouri',
+        genesis: 'Mississippi Valley-Type (MVT) low-temperature basinal brine replacements of Paleozoic carbonate platform reefs.',
+        notes: 'Massive, razor-sharp interlocking mirror-faced cubes of lead sulfide showing hopper growth steps, dusted with golden spears of marcasite.'
+      },
+      {
+        id: 'magnetite_lodestone',
+        name: 'Natural Magnetite Lodestone Boulder',
+        formula: 'Fe3O4',
+        mineralClass: 'Oxide',
+        crystalSystem: 'Isometric',
+        spaceGroup: 'Fd-3m',
+        mohs: 6.0,
+        sg: 5.18,
+        ri: 'Opaque Submetallic',
+        dispersion: 'None',
+        cleavage: 'None (Octahedral Parting)',
+        fracture: 'Uneven',
+        streak: 'Black',
+        optics: 'Naturally Magnetic &middot; Iron Filings Cling',
+        baseVal: 8200,
+        locality: 'Magnet Cove, Hot Spring Co., Arkansas',
+        genesis: 'Magmatic segregation in alkalic carbonatite ring complexes subjected to lightning strikes that permanently aligned magnetic domains.',
+        notes: 'A natural magnet: this heavy, charcoal-black lodestone boulder visibly attracts iron staples and compass needles. Coated in a natural beard of iron filings clinging to its magnetic poles.'
+      },
+
+      // 3. SPACE ROCKS & METEORITES
+      {
+        id: 'seymchan_pallasite',
+        name: 'Seymchan Pallasite Meteorite Slab',
+        formula: 'Fe-Ni Metal Matrix with Olivine (Mg,Fe)2SiO4',
+        mineralClass: 'Meteorite',
+        crystalSystem: 'Extraterrestrial Octahedrite',
+        spaceGroup: 'Widmanstätten Pattern (Kamacite & Taenite)',
+        mohs: 5.5,
+        sg: 4.80,
+        ri: 'Opaque / Translucent Peridot (1.65)',
+        dispersion: 'None',
+        cleavage: 'None',
+        fracture: 'Acid-Etched Metallic Plane',
+        streak: 'Steel Gray (Metal) / White (Olivine)',
+        optics: 'Widmanstätten Lamellae &amp; Gem Peridot',
+        baseVal: 45000,
+        locality: 'Hekandue River, Magadan Oblast, Far East, Russia',
+        genesis: 'Formed 4.56 billion years ago at the core-mantle boundary of a differentiated asteroid. Catastrophic collision shattered the parent body, launching core-mantle fragments into interplanetary space.',
+        notes: 'The pinnacle of extraterrestrial collecting: a polished and nitric-acid-etched slice revealing brilliant geometric Widmanstätten cross-hatch lamellae, encasing glowing, translucent golden-olive peridot gems from space.'
+      },
+      {
+        id: 'gibeon_iron',
+        name: 'Gibeon Octahedrite Iron Meteorite',
+        formula: 'Fe (91.8%), Ni (7.7%), Co (0.5%)',
+        mineralClass: 'Meteorite',
+        crystalSystem: 'Fine Octahedrite (Of)',
+        spaceGroup: 'Intergrown Kamacite / Taenite',
+        mohs: 4.5,
+        sg: 7.93,
+        ri: 'Opaque Metallic',
+        dispersion: 'None',
+        cleavage: 'None',
+        fracture: 'Hackly &middot; Regmaglypt Crust',
+        streak: 'Steel Gray',
+        optics: 'Widmanstätten Banding (0.3mm Bandwidth)',
+        baseVal: 21000,
+        locality: 'Great Namaqualand, Hardap Region, Namibia',
+        genesis: 'Molten iron-nickel core of a disrupted protoplanet that cooled at the agonizingly slow rate of 1°C per million years, allowing kamacite and taenite crystals to slowly unmix.',
+        notes: 'Displaying deep atmospheric flight thumbprints (regmaglypts) on its fusion crust, with one polished window acid-etched to show microscopic, flawless Thomson-Widmanstätten crystalline lattice lines.'
+      },
+      {
+        id: 'moldavite_tektite',
+        name: 'Besednice "Hedgehog" Moldavite Tektite',
+        formula: 'SiO2 (78%) + Al2O3, FeO Glass',
+        mineralClass: 'Meteorite',
+        crystalSystem: 'Amorphous (Impact Glass)',
+        spaceGroup: 'None',
+        mohs: 5.5,
+        sg: 2.34,
+        ri: '1.490',
+        dispersion: 'None',
+        cleavage: 'None',
+        fracture: 'Deeply Sculpted Conchoidal Spikes',
+        streak: 'White',
+        optics: 'Bottle-Green / Lechatelierite Swirls',
+        baseVal: 15500,
+        locality: 'Besednice, South Bohemian Region, Czech Republic',
+        genesis: 'Produced 14.8 million years ago by the hypervelocity kinetic impact of a giant meteorite at the Ries Crater in Bavaria. Terrestrial sands vaporized, fused, and rained down 400km away.',
+        notes: 'A legendary "Besednice Hedgehog" moldavite: covered in razor-sharp, deeply sculpted aerodynamic pits and needles etched by ancient acidic soil waters. Shines in translucent, mossy olive-green glass.'
+      },
+
+      // 4. PHENOMENAL & RARE MINERALS
+      {
+        id: 'benitoite_natrolite',
+        name: 'Benitoite on Snowy Natrolite',
+        formula: 'BaTi(Si3O9)',
+        mineralClass: 'Phenomenal',
+        crystalSystem: 'Hexagonal',
+        spaceGroup: 'P-6c2',
+        mohs: 6.5,
+        sg: 3.68,
+        ri: '1.757 - 1.804 (Extreme Birefringence)',
+        dispersion: '0.046 (Higher than Diamond)',
+        cleavage: 'None (Poor {10-10})',
+        fracture: 'Conchoidal',
+        streak: 'White',
+        optics: 'Dichroic: Sapphire Blue / Colorless &middot; Intense UV Glow',
+        baseVal: 27500,
+        locality: 'Dallas Gem Mine, San Benito Co., California',
+        genesis: 'Crystallized from low-temperature, high-pressure hydrothermal fluids in blueschist serpentinite bodies along the San Andreas fault zone.',
+        notes: 'One of the rarest crystal systems on Earth (ditrigonal-dipyramidal). Gemmy, deep sapphire-blue triangular benitoite crystals nestled like jewels upon a blinding white crust of fibrous natrolite.'
+      },
+      {
+        id: 'painite_rare',
+        name: 'Ultra-Rare Painite Hexagonal Prism',
+        formula: 'CaZrAl9O15(BO3)',
+        mineralClass: 'Phenomenal',
+        crystalSystem: 'Hexagonal',
+        spaceGroup: 'P63/m',
+        mohs: 8.0,
+        sg: 4.01,
+        ri: '1.787 - 1.816',
+        dispersion: '0.019',
+        cleavage: 'None',
+        fracture: 'Conchoidal',
+        streak: 'White',
+        optics: 'Dichroic: Ruby Red / Brownish Orange',
+        baseVal: 38000,
+        locality: 'Ohngaing Village, Mogok Stone Tract, Myanmar',
+        genesis: 'Boron-rich fluids interacted with zirconium and aluminum-bearing marbles under high-grade granulite facies metamorphism.',
+        notes: 'Historically cited in the Guinness Book of Records as the rarest mineral species on Earth. A razor-sharp, terminated hexagonal prismatic crystal of deep brownish-crimson transparency.'
+      },
+      {
+        id: 'charoite_matrix',
+        name: 'Silky Purple Charoite Scribed Block',
+        formula: 'K5Ca8(Si6O15)2(Si2O7)Si4O9(OH)&middot;3H2O',
+        mineralClass: 'Phenomenal',
+        crystalSystem: 'Monoclinic',
+        spaceGroup: 'P21/m',
+        mohs: 5.5,
+        sg: 2.54,
+        ri: '1.550 - 1.559',
+        dispersion: 'None',
+        cleavage: 'Good {100}',
+        fracture: 'Fibrous &middot; Splintery',
+        streak: 'White',
+        optics: 'Swirling Silky Chatoyant Violet',
+        baseVal: 11000,
+        locality: 'Sirenevvy Kamen, Chara River Basin, Sakha Republic, Siberia',
+        genesis: 'Metasomatic transformation of limestone xenoliths engulfed within the Murun potassic alkaline syenite massif.',
+        notes: 'Found only at one remote Siberian river. Dense, swirling interlocking fibrous crystals creating a hypnotic silky chatoyancy in shades of lavender, lilac, and royal violet with black aegirine sprays.'
+      },
+      {
+        id: 'malachite_banded_kidney',
+        name: 'Banded Malachite (Kidney Ore)',
+        formula: 'Cu2CO3(OH)2',
+        mineralClass: 'Phenomenal',
+        crystalSystem: 'Monoclinic',
+        spaceGroup: 'P21/a',
+        mohs: 4.0,
+        sg: 4.00,
+        ri: '1.655 - 1.909',
+        dispersion: 'None',
+        cleavage: 'Perfect {201}',
+        fracture: 'Subconchoidal',
+        streak: 'Pale Green',
+        optics: 'Silky Chatoyant Radial Rings',
+        baseVal: 8800,
+        locality: 'Kolwezi, Katanga Copper Crescent, DRC',
+        genesis: 'Supergene weathering in the oxidation zone of stratiform copper deposits where acidic copper-bearing solutions reacted with limestone carbonate rocks.',
+        notes: 'Mammillary botryoidal "kidney ore" lobes. A sawn and polished face exposes hypnotic concentric alternating zebra-growth rings in mint, forest emerald, and near-black green.'
+      },
+      {
+        id: 'lapis_lazuli_afghan',
+        name: 'Deep Blue Afghan Lapis Lazuli',
+        formula: '(Na,Ca)8(AlSiO4)6(SO4,S,Cl)2',
+        mineralClass: 'Phenomenal',
+        crystalSystem: 'Isometric (Lazurite constituent)',
+        spaceGroup: 'P-43n',
+        mohs: 5.5,
+        sg: 2.80,
+        ri: '1.500',
+        dispersion: 'None',
+        cleavage: 'Imperfect',
+        fracture: 'Uneven &middot; Granular',
+        streak: 'Light Ultramarine Blue',
+        optics: 'Rich Saturated Cobalt-Blue Mass',
+        baseVal: 11500,
+        locality: 'Sar-e-Sang Mines, Koksha Valley, Badakhshan, Afghanistan',
+        genesis: 'Contact metamorphism of dolomitic limestones intruded by granitic plutons, mined continuously since the 4th millennium BCE.',
+        notes: 'The royal stone of Pharaohs: an intense, midnight ultramarine blue block intricately ribboned with snow-white calcite rivers and glittering brassy stars of golden pyrite.'
+      },
+      {
+        id: 'bismuth_hopper',
+        name: 'Stair-Step Rainbow Bismuth Hopper',
+        formula: 'Bi',
+        mineralClass: 'Phenomenal',
+        crystalSystem: 'Trigonal',
+        spaceGroup: 'R-3m',
+        mohs: 2.2,
+        sg: 9.78,
+        ri: 'Opaque Metallic',
+        dispersion: 'None',
+        cleavage: 'Perfect Basal {0001}',
+        fracture: 'Brittle',
+        streak: 'Silver-White',
+        optics: 'Thin-Film Rainbow Interference',
+        baseVal: 7200,
+        locality: 'Schneeberg Mining Field, Saxony, Germany',
+        genesis: 'Crystallized rapidly from a high-purity molten metallic state, causing step edges to grow much faster than crystal faces.',
+        notes: 'A labyrinth of geometric ninety-degree stair-stepped architectural terraces. Oxidation produces iridescent thin-film rainbow colors of magenta, electric cyan, and spun gold.'
+      },
+      {
+        id: 'tourmaline_watermelon',
+        name: 'Watermelon Tourmaline Crystal Slice',
+        formula: 'Na(Li,Al)3Al6(BO3)3Si6O18(OH)4',
+        mineralClass: 'Phenomenal',
+        crystalSystem: 'Trigonal',
+        spaceGroup: 'R3m',
+        mohs: 7.5,
+        sg: 3.06,
+        ri: '1.624 - 1.644',
+        dispersion: '0.017',
+        cleavage: 'None',
+        fracture: 'Subconchoidal',
+        streak: 'White',
+        optics: 'Color Concentric Zoning',
+        baseVal: 17500,
+        locality: 'Himalaya Mine, Mesa Grande, San Diego Co., California',
+        genesis: 'Zoned lithium-cesium-tantalum (LCT) pegmatite pocket where fluid chemistry shifted from manganese-rich (pink) to iron-rich (green) during crystal cooling.',
+        notes: 'A flawless cross-section slice of a trigonal tourmaline crystal: a luscious, gemmy rubellite-pink heart surrounded by a crisp frosty-white boundary ring, encased in a deep emerald-green rind.'
+      },
+      {
+        id: 'quartz_rutilated',
+        name: 'Golden Rutilated Quartz Tower',
+        formula: 'SiO2 with inclusions of TiO2',
+        mineralClass: 'Phenomenal',
+        crystalSystem: 'Trigonal',
+        spaceGroup: 'P3121',
+        mohs: 7.0,
+        sg: 2.65,
+        ri: '1.544 - 1.553',
+        dispersion: '0.013',
+        cleavage: 'None',
+        fracture: 'Conchoidal',
+        streak: 'White',
+        optics: 'Brilliant Golden Rutile Sprays',
+        baseVal: 12000,
+        locality: 'Novo Horizonte, Bahia, Brazil',
+        genesis: 'Epitaxial exsolution where titanium dioxide needle crystals grew upon basal hematite stars before being encapsulated by optical quartz crystal growth.',
+        notes: 'Water-clear prismatic hexagonal quartz crystal tower encasing a dense, brilliant burst of criss-crossing golden sagenite rutile needles that catch the light like spun celestial wire.'
+      },
+      {
+        id: 'pyrite_sun',
+        name: 'Pyrite Sun Disk in Carbonaceous Shale',
+        formula: 'FeS2',
+        mineralClass: 'Phenomenal',
+        crystalSystem: 'Isometric',
+        spaceGroup: 'Pa-3',
+        mohs: 6.2,
+        sg: 5.01,
+        ri: 'Opaque Metallic',
+        dispersion: 'None',
+        cleavage: 'None',
+        fracture: 'Conchoidal',
+        streak: 'Greenish-Black',
+        optics: 'Radiating Striated Disk Face',
+        baseVal: 6800,
+        locality: 'Sparta Mine, Randolph Co., Illinois',
+        genesis: 'Formed in Pennsylvanian coal seams under extreme lithostatic overburden, forcing pyrite to grow laterally in a flattened, radial discoidal sunburst.',
+        notes: 'A perfect geometric circular medallion of glittering brassy-gold iron disulfide showing radial striations expanding from a central core, embedded on a jet-black shale matrix plate.'
+      },
+      {
+        id: 'rhodochrosite_stalactite',
+        name: 'Sweet Home Dogtooth Rhodochrosite',
+        formula: 'MnCO3',
+        mineralClass: 'Phenomenal',
+        crystalSystem: 'Trigonal',
+        spaceGroup: 'R-3c',
+        mohs: 3.8,
+        sg: 3.70,
+        ri: '1.597 - 1.816',
+        dispersion: 'High Birefringence',
+        cleavage: 'Perfect Rhombohedral {10-11}',
+        fracture: 'Uneven',
+        streak: 'White',
+        optics: 'Translucent Cherry-Red Glow',
+        baseVal: 31000,
+        locality: 'Sweet Home Mine, Alma, Park Co., Colorado',
+        genesis: 'Precipitated from tertiary epithermal hydrothermal veins cutting Precambrian granites, associated with quartz, fluorite, and tetrahedrite.',
+        notes: 'Gemmy, translucent, electric cherry-red rhombohedral crystals of unprecedented size and luster, perched in dramatic contrast on a matrix of sparkling needle quartz.'
+      },
+
+      // 5. HOLLOW GEODES & DRUSES
+      {
+        id: 'amethyst_cathedral_geode',
+        name: 'Amethyst Cathedral Hollow Geode',
+        formula: 'SiO2 : Fe3+ (Irradiated)',
+        mineralClass: 'Geode',
+        crystalSystem: 'Trigonal',
+        spaceGroup: 'P3121',
+        mohs: 7.0,
+        sg: 2.65,
+        ri: '1.544 - 1.553',
+        dispersion: '0.013',
+        cleavage: 'None',
+        fracture: 'Conchoidal',
+        streak: 'White',
+        optics: 'Vitreous Deep Royal Violet Cavern',
+        baseVal: 14500,
+        locality: 'Artigas Continental Traps, Uruguay',
+        genesis: 'Massive Cretaceous flood basalt lavas trapped gigantic gas pockets. Hydrothermal silica brines filled the vesicle, slowly crystallizing agate rims and inward-facing amethyst teeth.',
+        notes: 'An authentic volcanic cross-section: rugged basalt crust, banded blue-gray chalcedony agate rind, and a cavernous interior studded with hundreds of sharp, gemmy deep-purple amethyst crystals.'
+      },
+      {
+        id: 'citrine_druse_geode',
+        name: 'Golden Madeira Citrine Druse Cave',
+        formula: 'SiO2 : Fe2O3',
+        mineralClass: 'Geode',
+        crystalSystem: 'Trigonal',
+        spaceGroup: 'P3121',
+        mohs: 7.0,
+        sg: 2.65,
+        ri: '1.544 - 1.553',
+        dispersion: '0.013',
+        cleavage: 'None',
+        fracture: 'Conchoidal',
+        streak: 'White',
+        optics: 'Sparkling Honey-Amber Cavern',
+        baseVal: 13000,
+        locality: 'Rio Grande do Sul, Serra Geral Formation, Brazil',
+        genesis: 'Thermal conversion within gas vesicle cavities in amygdaloidal basalt flows where iron-doped quartz crystals were heated by natural geothermal gradients.',
+        notes: 'A gleaming hollow druse cave lined with thousands of sparkling golden-amber quartz terminations that refract warm candlelight in every direction.'
+      }
+    ];
+
+    const CURATORIAL_GRADES = [
+      { id: 'G4', label: 'G4 Massive / Raw Specimen', mult: 0.70 },
+      { id: 'G5', label: 'G5 Sub-Cabinet Reference', mult: 1.0 },
+      { id: 'G6', label: 'G6 Cabinet Collector', mult: 1.5 },
+      { id: 'G7', label: 'G7 Fine Cabinet Selection', mult: 2.3 },
+      { id: 'G8', label: 'G8 Choice Institutional Grade', mult: 3.6 },
+      { id: 'G9', label: 'G9 Gemmy Showcase Centerpiece', mult: 5.8 },
+      { id: 'G10', label: 'G10 Yale Peabody Museum Grade', mult: 12.0 }
+    ];
+
+    const LOCALITIES = {
+      kimberley: {
+        title: 'Kimberley Diamond Pipe, South Africa',
+        badge: 'Mantle Xenolith &middot; Diatreme Pipe',
+        desc: 'Deep mantle-derived volcanic pipe breeched 100km below the continental craton, carrying octahedral diamond crystals, chrome pyrope, and eclogitic nodules.',
+        pool: ['diamond_octahedral', 'platinum_nugget_ural', 'magnetite_lodestone']
+      },
+      mogok: {
+        title: 'Mogok Stone Tract, Myanmar (Burma)',
+        badge: 'Metamorphic Marble Skarn &middot; Tier 1',
+        desc: 'World famous gem gravels producing unheated Pigeon\'s Blood Rubies, ultra-rare Painite prisms, and sapphire float.',
+        pool: ['ruby_burma', 'painite_rare', 'tanzanite_merelani']
+      },
+      kashmir: {
+        title: 'Zanskar Range Pegmatites, Kashmir, India',
+        badge: 'High Alpine Intrusion &middot; Tier 1',
+        desc: 'Glacial cirque deposits yielding velvety cornflower blue sapphires, tourmaline, and feldspar crystals.',
+        pool: ['sapphire_kashmir', 'quartz_rutilated', 'tourmaline_watermelon']
+      },
+      muzomine: {
+        title: 'Muzo Emerald Basin, Boyacá, Colombia',
+        badge: 'Sedimentary Black Shale Hydrothermal',
+        desc: 'Organic-rich Cretaceous shales holding legendary Trapiche emerald crystals with black carbonaceous wheels.',
+        pool: ['emerald_trapiche', 'pyrite_sun', 'cinnabar_dolomite']
+      },
+      lightningridge: {
+        title: 'Lightning Ridge Basin, NSW, Australia',
+        badge: 'Sedimentary Weathering Basin',
+        desc: 'Cretaceous claystones and ironstone holding pitch-black potch and harlequin black opals.',
+        pool: ['opal_black_harlequin', 'opal_welo_fire', 'bismuth_hopper']
+      },
+      ural: {
+        title: 'Tokovaya River, Ural Mountains, Russia',
+        badge: 'Peridotite-Pegmatite Contact',
+        desc: 'Ancient Ural suture zone yielding color-shifting Alexandrite, native platinum, and emerald crystals.',
+        pool: ['alexandrite_ural', 'platinum_nugget_ural', 'malachite_banded_kidney']
+      },
+      magadan: {
+        title: 'Magadan Strewnfield, Far East, Russia',
+        badge: 'Extraterrestrial Pallasite Strewnfield',
+        desc: 'Glacial river valleys where the 4.5-billion-year-old Seymchan Pallasite core-mantle meteorites rain down.',
+        pool: ['seymchan_pallasite', 'moldavite_tektite', 'gibeon_iron']
+      },
+      namibia: {
+        title: 'Gibeon Strewnfield, Great Namaqualand',
+        badge: 'Prehistoric Impact Field',
+        desc: 'Vast Namib desert plain covered in fine octahedrite iron-nickel meteorite plates with Widmanstätten patterns.',
+        pool: ['gibeon_iron', 'moldavite_tektite', 'magnetite_lodestone']
+      },
+      keweenaw: {
+        title: 'Keweenaw Peninsula Rift, Michigan',
+        badge: 'Precambrian Basalt Rift Lode',
+        desc: 'Pure solid ductile native copper boulders, river-sculpted solid gold nuggets, and native silver wire.',
+        pool: ['copper_boulder_keweenaw', 'gold_monster_nugget', 'silver_wire_kongsberg']
+      },
+      artigas: {
+        title: 'Artigas Continental Traps, Uruguay',
+        badge: 'Flood Basalt Vesicles',
+        desc: 'Gigantic volcanic amygdules containing massive hollow amethyst cathedrals and golden citrine caves.',
+        pool: ['amethyst_cathedral_geode', 'citrine_druse_geode']
+      }
+    };
+
+    const AI_BIDDERS = [
+      'Peabody Curatorial Trust',
+      'Geneva Private Vault',
+      'Denver Lithic Syndicate',
+      'Smithsonian Acquisitions',
+      'Tokyo Gemological Guild',
+      'Alpine Collector Consortium',
+      'Monaco Mineral Salon',
+      'Houston Natural Science Trust'
+    ];
+
+    // --- APPLICATION STATE ---
+    let state = {
+      funds: 35000,
+      activeSector: 'kimberley',
+      specimens: [],
+      unopenedGeodes: 3,
+      activeSpecimenId: null,
+      latestMinedId: null,
+      strataCells: [], // 64 cells
+      // 4 SIMULTANEOUS AUCTION PODIUMS
+      podiums: [
+        { id: 0, name: 'Podium Alpha', activeLot: null, currentBid: 0, highBidder: '', isPlayerSeller: false, isPlayerHighBidder: false, reserve: 0, reserveMet: false, timer: 18, intervalId: null },
+        { id: 1, name: 'Podium Beta', activeLot: null, currentBid: 0, highBidder: '', isPlayerSeller: false, isPlayerHighBidder: false, reserve: 0, reserveMet: false, timer: 24, intervalId: null },
+        { id: 2, name: 'Podium Gamma', activeLot: null, currentBid: 0, highBidder: '', isPlayerSeller: false, isPlayerHighBidder: false, reserve: 0, reserveMet: false, timer: 30, intervalId: null },
+        { id: 3, name: 'Podium Delta', activeLot: null, currentBid: 0, highBidder: '', isPlayerSeller: false, isPlayerHighBidder: false, reserve: 0, reserveMet: false, timer: 15, intervalId: null }
+      ]
+    };
+
+    // --- PROCEDURAL SPECIMEN GENERATOR ---
+    function generateSpecimen(templateId = null, forcedGrade = null) {
+      const sector = LOCALITIES[state.activeSector];
+      const tid = templateId || sector.pool[Math.floor(Math.random() * sector.pool.length)];
+      const tmpl = PEABODY_SPECIES.find(s => s.id === tid) || PEABODY_SPECIES[0];
+
+      let grade = forcedGrade ? CURATORIAL_GRADES.find(g => g.id === forcedGrade) : null;
+      if (!grade) {
+        const roll = Math.random();
+        if (roll < 0.20) grade = CURATORIAL_GRADES[0];
+        else if (roll < 0.45) grade = CURATORIAL_GRADES[1];
+        else if (roll < 0.70) grade = CURATORIAL_GRADES[2];
+        else if (roll < 0.86) grade = CURATORIAL_GRADES[3];
+        else if (roll < 0.94) grade = CURATORIAL_GRADES[4];
+        else if (roll < 0.985) grade = CURATORIAL_GRADES[5];
+        else grade = CURATORIAL_GRADES[6];
+      }
+
+      const isSolidMetal = tmpl.mineralClass === 'Native Element';
+      const isMeteorite = tmpl.mineralClass === 'Meteorite';
+      const weightGrams = isSolidMetal 
+        ? Math.floor(Math.random() * 4200 + 800)
+        : (isMeteorite ? Math.floor(Math.random() * 2600 + 400) : Math.floor(Math.random() * 1200 + 90));
+
+      const matrixPct = isSolidMetal ? 0 : Math.floor(Math.random() * 22 + 10);
+      const finalVal = Math.round(tmpl.baseVal * grade.mult * (weightGrams / 350));
+
+      const accCode = `GD-${Math.floor(Math.random() * 8999 + 1000)}-${tmpl.id.substring(0, 3).toUpperCase()}`;
+      const certSerial = `CMA-2026-${Math.floor(Math.random() * 89999 + 10000)}`;
+
+      return {
+        id: 'SP-' + Math.random().toString(36).substring(2, 9).toUpperCase(),
+        accession: accCode,
+        serial: certSerial,
+        templateId: tmpl.id,
+        name: tmpl.name,
+        formula: tmpl.formula,
+        mineralClass: tmpl.mineralClass,
+        crystalSystem: tmpl.crystalSystem,
+        spaceGroup: tmpl.spaceGroup,
+        mohs: tmpl.mohs,
+        sg: tmpl.sg,
+        ri: tmpl.ri,
+        dispersion: tmpl.dispersion,
+        cleavage: tmpl.cleavage,
+        fracture: tmpl.fracture,
+        streak: tmpl.streak,
+        optics: tmpl.optics,
+        locality: tmpl.locality,
+        grade: grade.id,
+        gradeLabel: grade.label,
+        weightGrams: weightGrams,
+        matrixPct: matrixPct,
+        genesis: tmpl.genesis,
+        notes: tmpl.notes,
+        value: finalVal,
+        certified: false,
+        testedMohs: null,
+        testedStreak: null,
+        trimmed: false
+      };
+    }
+
+    // --- 8x8 STRATA GRID ENGINE ---
+    function initStrataGrid() {
+      state.strataCells = [];
+      const container = document.getElementById('strata-grid-container');
+      container.innerHTML = '';
+
+      for (let i = 0; i < 64; i++) {
+        const cellData = {
+          idx: i,
+          revealed: false,
+          type: Math.random() < 0.28 ? 'geode' : (Math.random() < 0.48 ? 'gem' : 'rock')
+        };
+        state.strataCells.push(cellData);
+
+        const el = document.createElement('div');
+        el.className = 'strata-cell';
+        el.id = `strata-cell-${i}`;
+        el.title = `Strata Cell #${i + 1}`;
+        el.innerHTML = `<span class="text-[9px] font-mono text-ink-500 font-bold">${i + 1}</span>`;
+        el.addEventListener('click', () => onStrataCellClick(i));
+        container.appendChild(el);
+      }
+      updateStrataCount();
+    }
+
+    function onStrataCellClick(idx) {
+      const cell = state.strataCells[idx];
+      if (cell.revealed) return;
+
+      cell.revealed = true;
+      const el = document.getElementById(`strata-cell-${idx}`);
+      el.classList.add('revealed');
+
+      playSound('strike');
+
+      if (cell.type === 'geode') {
+        state.unopenedGeodes++;
+        el.innerHTML = `<span class="text-sm">🪨</span>`;
+        logFieldDispatch(`⛏️ STRIKE BEDROCK: Uncovered 1 Unopened Volcanic Basalt Geode Nodule! Added to Prep Lab.`);
+        showToast('🪨 Recovered 1 Unopened Geode Nodule!', 'info');
+      } else if (cell.type === 'gem') {
+        const spec = generateSpecimen();
+        state.specimens.push(spec);
+        state.latestMinedId = spec.id;
+        state.activeSpecimenId = spec.id;
+        el.classList.add('strike-gem');
+        el.innerHTML = `<span class="text-sm">💎</span>`;
+        logFieldDispatch(`💎 HARVEST: ${spec.name} (${spec.grade} &middot; $${spec.value.toLocaleString()}). Provenance Accession #${spec.accession}.`);
+        showToast(`Harvested ${spec.name}!`, 'info');
+        renderDossierMaster();
+        populateDossierSelect();
+      } else {
+        const scrapVal = Math.floor(Math.random() * 80 + 35);
+        state.funds += scrapVal;
+        el.innerHTML = `<span class="text-[10px] font-mono text-ink-500">+$${scrapVal}</span>`;
+        logFieldDispatch(`Country rock salvaged for +$${scrapVal} crushed aggregate.`);
+      }
+
+      updateHeaderStats();
+      updateStrataCount();
+      renderSpecimenLedger();
+    }
+
+    function resetStrataGrid() {
+      playSound('crack');
+      initStrataGrid();
+      logFieldDispatch(`--- Surveyed new 8x8 bedrock section in ${LOCALITIES[state.activeSector].title} ---`);
+      showToast('8x8 Strata Section Refreshed');
+    }
+
+    function expeditionBlast() {
+      if (state.funds < 350) {
+        showToast('Insufficient funds for Dynamite Trench ($350 needed)', 'warning');
+        return;
+      }
+      state.funds -= 350;
+      playSound('crack');
+
+      const unrevealed = state.strataCells.filter(c => !c.revealed);
+      const toClear = unrevealed.slice(0, 8);
+      toClear.forEach(c => onStrataCellClick(c.idx));
+      showToast('Dynamite Trench blast excavated 8 strata blocks!', 'info');
+    }
+
+    function updateStrataCount() {
+      const remaining = state.strataCells.filter(c => !c.revealed).length;
+      document.getElementById('strata-remaining-count').textContent = remaining;
+      const btnLatest = document.getElementById('btn-view-latest-dossier');
+      if (state.latestMinedId) {
+        const latest = getSpecimenById(state.latestMinedId);
+        if (latest) {
+          btnLatest.disabled = false;
+          btnLatest.textContent = `${latest.name} (${latest.grade}) \u2192`;
+        }
+      }
+    }
+
+    function logFieldDispatch(text) {
+      const feed = document.getElementById('field-dispatch-feed');
+      const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      const item = document.createElement('div');
+      item.className = 'p-2 bg-parchment-100 border border-parchment-300 text-ink-950 font-mono text-[11px] leading-relaxed';
+      item.innerHTML = `<span class="text-ink-500">[${timeStr}]</span> ${text}`;
+      feed.prepend(item);
+    }
+
+    function changeSite(key) {
+      state.activeSector = key;
+      const s = LOCALITIES[key];
+      document.getElementById('site-title').textContent = s.title;
+      document.getElementById('site-tier-badge').innerHTML = s.badge;
+      document.getElementById('site-desc').textContent = s.desc;
+      resetStrataGrid();
+      showToast(`Sector switched to ${s.title}`);
+    }
+
+    // --- ACTIVE SPECIMEN ARCHIVAL DOSSIER ---
+    function getActiveSpecimen() {
+      return state.specimens.find(s => s.id === state.activeSpecimenId) || state.specimens[0] || null;
+    }
+
+    function getSpecimenById(id) {
+      return state.specimens.find(s => s.id === id);
+    }
+
+    function populateDossierSelect() {
+      const select = document.getElementById('dossier-specimen-select');
+      select.innerHTML = '';
+
+      if (state.specimens.length === 0) {
+        select.innerHTML = '<option value="">No specimens catalogued</option>';
+        return;
+      }
+
+      state.specimens.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.id;
+        opt.textContent = `${s.name} (#${s.accession} - ${s.grade} - $${s.value.toLocaleString()})`;
+        select.appendChild(opt);
+      });
+
+      if (!state.activeSpecimenId && state.specimens.length > 0) {
+        state.activeSpecimenId = state.specimens[0].id;
+      }
+      select.value = state.activeSpecimenId;
+    }
+
+    function loadDossierById(id) {
+      state.activeSpecimenId = id;
+      document.getElementById('dossier-specimen-select').value = id;
+      renderDossierMaster();
+    }
+
+    function renderDossierMaster() {
+      const spec = getActiveSpecimen();
+      if (!spec) return;
+
+      document.getElementById('dossier-accession').textContent = `ACCESSION #${spec.accession}`;
+      document.getElementById('dossier-title').textContent = spec.name;
+      document.getElementById('dossier-subtitle').textContent = spec.locality;
+      document.getElementById('dossier-valuation').textContent = `$${spec.value.toLocaleString()}`;
+      document.getElementById('dossier-weight').textContent = `${spec.weightGrams.toLocaleString()} Grams &middot; Natural Formation`;
+
+      // Status Stamp Badges
+      const statusBadge = document.getElementById('dossier-status-badge');
+      if (spec.certified) {
+        statusBadge.className = 'stamp-badge stamp-certified';
+        statusBadge.textContent = `[COA CERTIFIED #${spec.serial}]`;
+      } else {
+        statusBadge.className = 'stamp-badge border-ink-500 text-ink-500 bg-parchment-100';
+        statusBadge.textContent = '[UNAUTHENTICATED FILE]';
+      }
+
+      document.getElementById('dossier-grade-badge').textContent = `[${spec.gradeLabel.toUpperCase()}]`;
+      document.getElementById('dossier-class-badge').textContent = spec.mineralClass.toUpperCase();
+
+      // Technical 8-Point Scientific Grid
+      document.getElementById('dossier-formula').textContent = spec.formula;
+      document.getElementById('dossier-spacegroup').textContent = `Space: ${spec.spaceGroup}`;
+      document.getElementById('dossier-system').textContent = spec.crystalSystem;
+      document.getElementById('dossier-habit').textContent = spec.morphology || 'Pristine Matrix Crystal';
+      document.getElementById('dossier-mohs').textContent = `${spec.mohs} on Mohs Scale`;
+      document.getElementById('dossier-sg').textContent = `SG: ${spec.sg} g/cm³`;
+      document.getElementById('dossier-ri').textContent = `n = ${spec.ri}`;
+      document.getElementById('dossier-dispersion').textContent = `Dispersion: ${spec.dispersion}`;
+      document.getElementById('dossier-cleavage').textContent = spec.cleavage;
+      document.getElementById('dossier-fracture').textContent = spec.fracture;
+      document.getElementById('dossier-streak').textContent = spec.streak;
+      document.getElementById('dossier-matrix').textContent = `${spec.matrixPct}% Matrix Gangue`;
+      document.getElementById('dossier-trimmed-status').textContent = spec.trimmed ? 'Precision Lapidary Cut' : (spec.matrixPct === 0 ? 'Pure Solid Mass' : 'Raw Matrix Rock');
+      document.getElementById('dossier-optics').textContent = spec.optics;
+
+      // Deep Scientific Curatorial Fact Paragraphs
+      document.getElementById('dossier-genesis').textContent = spec.genesis;
+      document.getElementById('dossier-notes').textContent = spec.notes;
+
+      // Diagnostic Lab Test Log
+      document.getElementById('dossier-test-mohs').textContent = spec.testedMohs ? `Confirmed: ${spec.testedMohs}` : 'Untested in Bench Lab';
+      document.getElementById('dossier-test-streak').textContent = spec.testedStreak ? `Streak: ${spec.testedStreak}` : 'Untested on Porcelain';
+      document.getElementById('dossier-test-coa').textContent = spec.certified ? `Verified & Serialized (#${spec.serial})` : 'Awaiting Curatorial Seal';
+
+      // Button state
+      document.getElementById('btn-dossier-coa').disabled = spec.certified;
+      document.getElementById('btn-dossier-coa').textContent = spec.certified ? '✓ Archival COA Issued' : '🏛️ Issue Archival COA';
+    }
+
+    // Interactive Testing & Prep Bench
+    function actionDossierScratch() {
+      const spec = getActiveSpecimen();
+      if (!spec) return;
+
+      playSound('strike');
+      spec.testedMohs = `${spec.mohs} on Mohs Scale (Calibrated Stylus)`;
+      showToast(`Mohs Scratch: Hardness confirmed at ${spec.mohs}.`);
+      renderDossierMaster();
+      document.getElementById('lab-diagnostic-log').textContent = `Scratch Test: ${spec.name} scratch-tested. Verified at ${spec.mohs} Mohs.`;
+    }
+
+    function actionDossierStreak() {
+      const spec = getActiveSpecimen();
+      if (!spec) return;
+
+      playSound('strike');
+      spec.testedStreak = `${spec.streak} Powder on Porcelain`;
+      showToast(`Streak Test: Diagnostic ${spec.streak} streak.`);
+      renderDossierMaster();
+      document.getElementById('lab-diagnostic-log').textContent = `Streak Test: Scraped ${spec.name} across unglazed tile. Powder: ${spec.streak}.`;
+    }
+
+    function actionDossierTrim() {
+      const spec = getActiveSpecimen();
+      if (!spec) return;
+
+      if (state.funds < 125) {
+        showToast('Insufficient funds for Diamond Saw Trim ($125)', 'warning');
+        return;
+      }
+      if (spec.matrixPct <= 0) {
+        showToast('Specimen has 0% matrix gangue (100% pure solid crystal/metal)!', 'warning');
+        return;
+      }
+
+      state.funds -= 125;
+      playSound('crack');
+      spec.matrixPct = Math.max(0, spec.matrixPct - 15);
+      spec.trimmed = true;
+
+      const curIdx = CURATORIAL_GRADES.findIndex(g => g.id === spec.grade);
+      if (curIdx < CURATORIAL_GRADES.length - 1 && Math.random() < 0.65) {
+        const next = CURATORIAL_GRADES[curIdx + 1];
+        spec.grade = next.id;
+        spec.gradeLabel = next.label;
+        spec.value = Math.round(spec.value * 1.55);
+        showToast(`Diamond Saw elevated specimen to ${next.label}! Value increased!`, 'info');
+      } else {
+        spec.value = Math.round(spec.value * 1.15);
+        showToast('Matrix rock gangue cleanly cut away.', 'info');
+      }
+
+      updateHeaderStats();
+      renderDossierMaster();
+      renderSpecimenLedger();
+    }
+
+    function actionDossierIssueCoa() {
+      const spec = getActiveSpecimen();
+      if (!spec || spec.certified) return;
+
+      playSound('certified');
+      spec.certified = true;
+      spec.value = Math.round(spec.value * 1.65);
+      showToast(`🏛️ Archival Provenance COA issued for #${spec.accession}!`, 'info');
+
+      renderDossierMaster();
+      renderSpecimenLedger();
+      openCmaModal(spec);
+    }
+
+    function crackGeodeVise() {
+      if (state.unopenedGeodes <= 0) {
+        showToast('No unopened basalt geodes available. Prospect the strata grid to find nodules!', 'warning');
+        return;
+      }
+
+      state.unopenedGeodes--;
+      playSound('crack');
+
+      const isCitrine = Math.random() < 0.35;
+      const tmplId = isCitrine ? 'citrine_druse_geode' : 'amethyst_cathedral_geode';
+      const geodeSpec = generateSpecimen(tmplId, 'G8');
+
+      state.specimens.push(geodeSpec);
+      state.activeSpecimenId = geodeSpec.id;
+
+      const readout = document.getElementById('geode-crack-readout');
+      readout.innerHTML = `
+        <div>
+          <strong class="text-ink-950 uppercase text-sm block">💥 HYDRAULIC FRACTURE SUCCESSFUL:</strong>
+          <span class="text-ink-800 text-xs block mt-1">Vesicle split along equator! Revealed a sparkling interior cavern of ${geodeSpec.name} (${geodeSpec.gradeLabel}). Appraised: $${geodeSpec.value.toLocaleString()}.</span>
+        </div>
+      `;
+
+      showToast(`💥 Cracked open a stunning ${geodeSpec.name}!`, 'info');
+      updateHeaderStats();
+      populateDossierSelect();
+      renderSpecimenLedger();
+    }
+
+    // --- CMA CERTIFICATE MODAL ---
+    function openCmaModal(spec) {
+      document.getElementById('cert-name').textContent = spec.name;
+      document.getElementById('cert-locality').textContent = spec.locality;
+      document.getElementById('cert-formula').textContent = `${spec.formula} &middot; ${spec.mineralClass}`;
+      document.getElementById('cert-mohs').textContent = `${spec.mohs} on Mohs Scale`;
+      document.getElementById('cert-grade').textContent = spec.gradeLabel;
+      document.getElementById('cert-serial').textContent = spec.serial;
+
+      document.getElementById('modal-cma-cert').classList.remove('hidden');
+    }
+
+    function closeCmaModal() {
+      document.getElementById('modal-cma-cert').classList.add('hidden');
+    }
+
+    // --- MULTI-PODIUM SIMULTANEOUS LIVE AUCTION HALL (4 PODIUMS) ---
+    function initAllPodiums() {
+      state.podiums.forEach((podium, idx) => {
+        if (!podium.activeLot) {
+          startNewPodiumLot(idx);
+        }
+      });
+      renderAllPodiums();
+    }
+
+    function startNewPodiumLot(podiumIdx, playerSpec = null, playerReserve = null) {
+      const podium = state.podiums[podiumIdx];
+      if (podium.intervalId) clearInterval(podium.intervalId);
+
+      const isPlayerConsignment = playerSpec !== null;
+      const lot = playerSpec || generateSpecimen(null, Math.random() < 0.5 ? 'G8' : 'G9');
+      if (!isPlayerConsignment) lot.certified = Math.random() < 0.6;
+
+      const reserve = playerReserve || Math.round(lot.value * 0.82);
+
+      podium.activeLot = lot;
+      podium.currentBid = Math.round(reserve * 0.68);
+      podium.highBidder = AI_BIDDERS[Math.floor(Math.random() * AI_BIDDERS.length)];
+      podium.isPlayerSeller = isPlayerConsignment;
+      podium.isPlayerHighBidder = false;
+      podium.reserve = reserve;
+      podium.reserveMet = podium.currentBid >= reserve;
+      podium.timer = Math.floor(Math.random() * 10 + 18);
+
+      renderPodiumCard(podiumIdx);
+
+      // Start independent timer loop for this podium
+      podium.intervalId = setInterval(() => {
+        podium.timer--;
+        updatePodiumTimerDisplay(podiumIdx);
+
+        // AI Bidding Chance (COA boosts aggression)
+        const bidChance = lot.certified ? 0.65 : 0.45;
+        if (podium.timer > 2 && Math.random() < bidChance && !podium.isPlayerHighBidder) {
+          triggerAiBidOnPodium(podiumIdx);
+        }
+
+        if (podium.timer <= 0) {
+          concludePodiumLot(podiumIdx);
+        }
+      }, 1000);
+    }
+
+    function triggerAiBidOnPodium(podiumIdx) {
+      const podium = state.podiums[podiumIdx];
+      if (!podium.activeLot) return;
+
+      const bidder = AI_BIDDERS[Math.floor(Math.random() * AI_BIDDERS.length)];
+      if (bidder === podium.highBidder) return;
+
+      const increment = podium.activeLot.value > 15000 ? 1500 : 500;
+      podium.currentBid += increment;
+      podium.highBidder = bidder;
+      podium.isPlayerHighBidder = false;
+      podium.reserveMet = podium.currentBid >= podium.reserve;
+
+      playSound('strike');
+      renderPodiumCard(podiumIdx);
+    }
+
+    function playerBidOnPodium(podiumIdx, increment) {
+      const podium = state.podiums[podiumIdx];
+      if (!podium.activeLot) return;
+
+      // STRICT SAFEGUARD: Cannot bid on your own consigned specimen!
+      if (podium.isPlayerSeller) {
+        showToast('Auction Rule: You cannot bid on your own consigned property!', 'warning');
+        return;
+      }
+
+      const nextBid = podium.currentBid + increment;
+      if (state.funds < nextBid) {
+        showToast('Insufficient funds for this bid increment!', 'warning');
+        return;
+      }
+
+      podium.currentBid = nextBid;
+      podium.highBidder = 'YOU (Geo Dude)';
+      podium.isPlayerHighBidder = true;
+      podium.reserveMet = podium.currentBid >= podium.reserve;
+      podium.timer = Math.max(podium.timer, 10);
+
+      playSound('gavel');
+      showToast(`High Bid placed on ${podium.name}: $${podium.currentBid.toLocaleString()}!`);
+      renderPodiumCard(podiumIdx);
+    }
+
+    function concludePodiumLot(podiumIdx) {
+      const podium = state.podiums[podiumIdx];
+      clearInterval(podium.intervalId);
+      playSound('gavel');
+
+      const lot = podium.activeLot;
+      const isReserveMet = podium.reserveMet;
+
+      if (!isReserveMet) {
+        showToast(`${podium.name}: Lot passed. Reserve not met.`, 'warning');
+        if (podium.isPlayerSeller) {
+          state.specimens.push(lot);
+          populateDossierSelect();
+          renderSpecimenLedger();
+        }
+      } else if (podium.isPlayerHighBidder) {
+        state.funds -= podium.currentBid;
+        state.specimens.push(lot);
+        showToast(`Winning Gavel! ${lot.name} acquired on ${podium.name}!`, 'info');
+        updateHeaderStats();
+        populateDossierSelect();
+        renderSpecimenLedger();
+      } else if (podium.isPlayerSeller) {
+        const netFunds = podium.currentBid;
+        state.funds += netFunds;
+        showToast(`Hammer fell! Consignment on ${podium.name} sold to ${podium.highBidder} for +$${netFunds.toLocaleString()}!`, 'info');
+        updateHeaderStats();
+      }
+
+      // Briefly display gavel conclusion, then rotate new lot
+      const card = document.getElementById(`podium-card-${podiumIdx}`);
+      card.innerHTML = `
+        <div class="p-8 text-center font-mono space-y-2">
+          <strong class="text-ink-950 uppercase text-lg block">GAVEL FALLS &middot; LOT CONCLUDED</strong>
+          <span class="text-xs text-ink-700 block">${isReserveMet ? `Sold for $${podium.currentBid.toLocaleString()} to ${podium.highBidder}` : 'Passed (Reserve Not Met)'}</span>
+          <span class="text-[10px] text-ink-500 block uppercase">Rotating next lot...</span>
+        </div>
+      `;
+
+      setTimeout(() => startNewPodiumLot(podiumIdx), 3500);
+    }
+
+    function renderPodiumCard(idx) {
+      const podium = state.podiums[idx];
+      const card = document.getElementById(`podium-card-${idx}`);
+      if (!podium.activeLot) return;
+
+      const lot = podium.activeLot;
+
+      card.innerHTML = `
+        <div>
+          <div class="flex items-center justify-between pb-3 border-b-2 border-ink-950 font-mono text-xs">
+            <div class="flex items-center space-x-2">
+              <strong class="text-ink-950">${podium.name}</strong>
+              <span class="stamp-badge ${podium.isPlayerSeller ? 'stamp-certified' : 'border-ink-950 text-ink-950 bg-parchment-100'}">
+                ${podium.isPlayerSeller ? 'YOUR CONSIGNMENT' : 'EXCHANGE BLOCK'}
+              </span>
+            </div>
+            <div class="flex items-center space-x-1.5">
+              <span class="text-[10px] text-ink-500 uppercase">Closing:</span>
+              <span id="podium-timer-${idx}" class="font-bold text-xs px-2 py-0.5 bg-ink-950 text-parchment-25">00:${podium.timer < 10 ? '0' : ''}${podium.timer}</span>
+            </div>
+          </div>
+
+          <div class="my-4">
+            <div class="flex flex-wrap items-center gap-1.5 mb-1.5">
+              <span class="stamp-badge border-ink-950 text-ink-950">[${lot.grade}]</span>
+              ${lot.certified ? `<span class="stamp-badge stamp-certified">[COA #${lot.serial}]</span>` : '<span class="stamp-badge border-ink-500 text-ink-500">[RAW]</span>'}
+            </div>
+
+            <h3 class="font-serif text-2xl font-bold text-ink-950 leading-tight">${lot.name}</h3>
+            <p class="text-xs font-serif italic text-ink-700 mt-0.5">${lot.locality}</p>
+
+            <div class="mt-3 p-3 bg-parchment-100 border border-parchment-300 font-mono text-xs flex justify-between items-center">
+              <div>
+                <span class="text-[10px] text-ink-500 uppercase block">High Bid:</span>
+                <span class="font-serif text-2xl font-bold text-ink-950">$${podium.currentBid.toLocaleString()}</span>
+                <span class="text-[10px] block ${podium.isPlayerHighBidder ? 'text-archival-red font-bold' : 'text-ink-700'}">${podium.highBidder}</span>
+              </div>
+              <div class="text-right">
+                <span class="text-[10px] text-ink-500 uppercase block">Reserve: $${podium.reserve.toLocaleString()}</span>
+                <span class="stamp-badge ${podium.reserveMet ? 'stamp-certified' : 'border-ink-500 text-ink-500 bg-parchment-50'} mt-1 inline-block">
+                  ${podium.reserveMet ? '✓ RESERVE MET' : 'BELOW RESERVE'}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-3 border-t-2 border-ink-950 font-mono text-xs">
+          ${podium.isPlayerSeller ? `
+            <div class="p-2.5 bg-parchment-200 border border-dashed border-ink-950 text-center text-[11px] text-ink-950">
+              <strong>CONSIGNOR ACTIVE VIEW</strong> &middot; Bidding disabled on your own lot. Watch syndicates bid!
+            </div>
+          ` : `
+            <div class="flex gap-2">
+              <button onclick="playerBidOnPodium(${idx}, 500)" class="flex-1 py-2 border border-ink-950 bg-parchment-50 hover:bg-parchment-200 font-bold transition">
+                +$500
+              </button>
+              <button onclick="playerBidOnPodium(${idx}, 2000)" class="flex-1 py-2 border border-ink-950 bg-parchment-50 hover:bg-parchment-200 font-bold transition">
+                +$2,000
+              </button>
+              <button onclick="playerBidOnPodium(${idx}, 5000)" class="flex-1 py-2 border-2 border-ink-950 bg-ink-950 text-parchment-25 hover:bg-ink-800 font-bold transition">
+                +$5,000
+              </button>
+            </div>
+          `}
+        </div>
+      `;
+    }
+
+    function renderAllPodiums() {
+      state.podiums.forEach((_, idx) => renderPodiumCard(idx));
+    }
+
+    function updatePodiumTimerDisplay(idx) {
+      const el = document.getElementById(`podium-timer-${idx}`);
+      const podium = state.podiums[idx];
+      if (el) el.textContent = `00:${podium.timer < 10 ? '0' : ''}${podium.timer}`;
+    }
+
+    // Modal Consignment Handler
+    function openMultiPodiumConsignModal() {
+      const select = document.getElementById('modal-consign-specimen-select');
+      select.innerHTML = '';
+
+      if (state.specimens.length === 0) {
+        showToast('No specimens in catalog to consign. Discover minerals first!', 'warning');
+        return;
+      }
+
+      state.specimens.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.id;
+        opt.textContent = `${s.name} (${s.grade} &middot; Appraised $${s.value.toLocaleString()})`;
+        select.appendChild(opt);
+      });
+
+      onConsignModalSelectChange(state.specimens[0].id);
+      document.getElementById('modal-consign').classList.remove('hidden');
+    }
+
+    function closeMultiPodiumConsignModal() {
+      document.getElementById('modal-consign').classList.add('hidden');
+    }
+
+    function onConsignModalSelectChange(specId) {
+      const spec = getSpecimenById(specId);
+      if (spec) {
+        document.getElementById('modal-consign-reserve').value = Math.round(spec.value * 0.80);
+      }
+    }
+
+    function submitConsignmentModal() {
+      const podiumIdx = parseInt(document.getElementById('modal-consign-podium-idx').value, 10);
+      const specId = document.getElementById('modal-consign-specimen-select').value;
+      const reserve = parseInt(document.getElementById('modal-consign-reserve').value, 10) || 1000;
+
+      const idx = state.specimens.findIndex(s => s.id === specId);
+      if (idx === -1) return;
+
+      const spec = state.specimens[idx];
+      state.specimens.splice(idx, 1);
+
+      closeMultiPodiumConsignModal();
+      switchTab('auction');
+      startNewPodiumLot(podiumIdx, spec, reserve);
+      showToast(`${spec.name} is now live on ${state.podiums[podiumIdx].name}!`, 'info');
+
+      updateHeaderStats();
+      populateDossierSelect();
+      renderSpecimenLedger();
+    }
+
+    // --- SPECIMEN LEDGER MATRIX ---
+    function renderSpecimenLedger() {
+      const tbody = document.getElementById('ledger-table-body');
+      const emptyState = document.getElementById('ledger-empty');
+      tbody.innerHTML = '';
+
+      if (state.specimens.length === 0) {
+        emptyState.classList.remove('hidden');
+        document.getElementById('ledger-count-val').textContent = '0';
+        document.getElementById('ledger-total-val').textContent = '$0';
+        return;
+      }
+      emptyState.classList.add('hidden');
+
+      const search = (document.getElementById('ledger-search-input')?.value || '').toLowerCase();
+      const filterClass = document.getElementById('ledger-filter-class')?.value || 'ALL';
+      const filterCoa = document.getElementById('ledger-filter-coa')?.value || 'ALL';
+      const sortBy = document.getElementById('ledger-sort')?.value || 'val-desc';
+
+      let list = state.specimens.slice();
+
+      if (search) {
+        list = list.filter(s => s.name.toLowerCase().includes(search) || s.formula.toLowerCase().includes(search) || s.accession.toLowerCase().includes(search) || s.locality.toLowerCase().includes(search));
+      }
+
+      if (filterClass !== 'ALL') {
+        list = list.filter(s => s.mineralClass === filterClass);
+      }
+
+      if (filterCoa === 'COA') list = list.filter(s => s.certified);
+      else if (filterCoa === 'UNTESTED') list = list.filter(s => !s.testedMohs && !s.testedStreak);
+      else if (filterCoa === 'G10') list = list.filter(s => s.grade === 'G10');
+
+      if (sortBy === 'val-desc') list.sort((a, b) => b.value - a.value);
+      else if (sortBy === 'val-asc') list.sort((a, b) => a.value - b.value);
+      else if (sortBy === 'mohs-desc') list.sort((a, b) => b.mohs - a.mohs);
+      else if (sortBy === 'name-asc') list.sort((a, b) => a.name.localeCompare(b.name));
+
+      const totalVal = state.specimens.reduce((acc, s) => acc + s.value, 0);
+      document.getElementById('ledger-count-val').textContent = state.specimens.length;
+      document.getElementById('ledger-total-val').textContent = `$${totalVal.toLocaleString()}`;
+
+      list.forEach(spec => {
+        const row = document.createElement('tr');
+        row.className = 'hover:bg-parchment-100 transition';
+        row.innerHTML = `
+          <td class="p-3.5 font-bold text-ink-950">#${spec.accession}</td>
+          <td class="p-3.5">
+            <div class="font-bold text-ink-950">${spec.name}</div>
+            <div class="text-[10px] text-ink-500 italic">${spec.locality}</div>
+          </td>
+          <td class="p-3.5">
+            <div>${spec.formula}</div>
+            <div class="text-[10px] text-ink-500">${spec.mineralClass}</div>
+          </td>
+          <td class="p-3.5">
+            <div>${spec.mohs} Mohs</div>
+            <div class="text-[10px] text-ink-500">${spec.weightGrams.toLocaleString()} g &middot; SG: ${spec.sg}</div>
+          </td>
+          <td class="p-3.5">
+            <span class="stamp-badge border-ink-950 text-ink-950">${spec.grade}</span>
+            ${spec.certified ? '<span class="stamp-badge stamp-certified ml-1">COA</span>' : ''}
+          </td>
+          <td class="p-3.5 font-bold text-ink-950">$${spec.value.toLocaleString()}</td>
+          <td class="p-3.5 text-right space-x-1">
+            <button onclick="inspectDossierDirect('${spec.id}')" class="px-2 py-1 border border-ink-950 bg-parchment-50 hover:bg-ink-950 hover:text-parchment-25 transition">
+              Dossier
+            </button>
+            <button onclick="quickSalvage('${spec.id}')" class="px-2 py-1 border border-parchment-300 text-ink-500 hover:text-ink-950 transition">
+              Salvage
+            </button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function inspectDossierDirect(id) {
+      loadDossierById(id);
+      switchTab('dossier');
+    }
+
+    function quickSalvage(id) {
+      const idx = state.specimens.findIndex(s => s.id === id);
+      if (idx === -1) return;
+
+      const spec = state.specimens[idx];
+      const payout = Math.floor(spec.value * 0.70);
+      state.funds += payout;
+      state.specimens.splice(idx, 1);
+
+      playSound('strike');
+      showToast(`Quick salvaged #${spec.accession} for +$${payout.toLocaleString()}`);
+
+      updateHeaderStats();
+      populateDossierSelect();
+      renderSpecimenLedger();
+    }
+
+    // --- YALE PEABODY COMPENDIUM ---
+    function renderCompendiumGrid() {
+      const container = document.getElementById('comp-grid');
+      const search = (document.getElementById('comp-search')?.value || '').toLowerCase();
+      container.innerHTML = '';
+
+      const filtered = PEABODY_SPECIES.filter(s => {
+        return s.name.toLowerCase().includes(search) ||
+               s.formula.toLowerCase().includes(search) ||
+               s.mineralClass.toLowerCase().includes(search) ||
+               s.locality.toLowerCase().includes(search) ||
+               s.genesis.toLowerCase().includes(search) ||
+               s.notes.toLowerCase().includes(search);
+      });
+
+      filtered.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'paper-card p-5 border-2 border-ink-950 flex flex-col justify-between shadow-[3px_3px_0px_#0a0a0a]';
+        card.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between pb-2 border-b border-parchment-300 text-[10px] font-mono">
+              <span class="stamp-badge border-ink-950 text-ink-950">${item.mineralClass}</span>
+              <span class="text-ink-500">${item.mohs} Mohs &middot; SG: ${item.sg}</span>
+            </div>
+
+            <h3 class="font-serif text-2xl font-bold text-ink-950 mt-3">${item.name}</h3>
+            <div class="font-mono text-xs text-ink-700 mt-0.5">${item.formula} &middot; Space: ${item.spaceGroup}</div>
+            <div class="text-[11px] font-serif italic text-ink-500 mt-1">${item.locality}</div>
+
+            <div class="mt-3 space-y-2 text-xs font-serif leading-relaxed">
+              <p class="text-ink-800 italic bg-parchment-100 p-2.5 border-l-2 border-ink-950">
+                <strong>Genesis:</strong> ${item.genesis}
+              </p>
+              <p class="text-ink-800 italic bg-parchment-100 p-2.5 border-l-2 border-ink-950">
+                <strong>Curatorial Lore:</strong> ${item.notes}
+              </p>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-parchment-300 flex items-center justify-between text-xs font-mono">
+            <span class="text-ink-500">Benchmark Appraisal:</span>
+            <strong class="text-ink-950 text-sm">$${item.baseVal.toLocaleString()}</strong>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // --- DEVELOPER GOD MODE CURATORIAL SUITE ---
+    function godAddFunds(amt) {
+      state.funds += amt;
+      updateHeaderStats();
+      showToast(`⚡ Research Endowment Granted: +$${amt.toLocaleString()}`);
+    }
+
+    function godSpawnPallasite() {
+      const spec = generateSpecimen('seymchan_pallasite', 'G10');
+      spec.weightGrams = 3200.0;
+      spec.certified = true;
+      spec.value = 85000;
+      state.specimens.push(spec);
+      state.activeSpecimenId = spec.id;
+      showToast('⚡ Spawned G10 Seymchan Pallasite Meteorite Slab!');
+
+      updateHeaderStats();
+      populateDossierSelect();
+      loadDossierById(spec.id);
+      renderSpecimenLedger();
+      switchTab('dossier');
+    }
+
+    function godSpawnGold() {
+      const spec = generateSpecimen('gold_monster_nugget', 'G10');
+      spec.weightGrams = 4500.0;
+      spec.certified = true;
+      spec.value = 92000;
+      state.specimens.push(spec);
+      state.activeSpecimenId = spec.id;
+      showToast('⚡ Spawned Monster 4.5kg Solid Gold Boulder!');
+
+      updateHeaderStats();
+      populateDossierSelect();
+      loadDossierById(spec.id);
+      renderSpecimenLedger();
+      switchTab('dossier');
+    }
+
+    function godClearGrid() {
+      state.strataCells.forEach(c => {
+        if (!c.revealed) onStrataCellClick(c.idx);
+      });
+      showToast('⚡ Seismic detonation excavated all 64 strata blocks!');
+    }
+
+    // --- TAB NAVIGATION & CONTROLLER ---
+    function switchTab(tabId) {
+      ['prospecting', 'dossier', 'auction', 'lab', 'inventory', 'encyclopedia', 'godmode'].forEach(p => {
+        const el = document.getElementById(`panel-${p}`);
+        const btn = document.getElementById(`tab-btn-${p}`);
+        if (p === tabId) {
+          el.classList.remove('hidden');
+          btn.classList.add('active');
+        } else {
+          el.classList.add('hidden');
+          btn.classList.remove('active');
+        }
+      });
+
+      if (tabId === 'dossier') renderDossierMaster();
+      else if (tabId === 'auction') initAllPodiums();
+      else if (tabId === 'inventory') renderSpecimenLedger();
+      else if (tabId === 'encyclopedia') renderCompendiumGrid();
+    }
+
+    function updateHeaderStats() {
+      document.getElementById('stat-funds').textContent = `$${state.funds.toLocaleString()}`;
+      document.getElementById('stat-bag-count').textContent = state.specimens.length;
+      document.getElementById('stat-geode-count').textContent = state.unopenedGeodes;
+      document.getElementById('lab-geode-count-badge').textContent = `${state.unopenedGeodes} Unopened Nodules`;
+    }
+
+    // --- INITIALIZATION ---
+    window.addEventListener('DOMContentLoaded', () => {
+      // Seed Starter Specimens
+      const diamondSpec = generateSpecimen('diamond_octahedral', 'G10');
+      diamondSpec.certified = true;
+      const rubySpec = generateSpecimen('ruby_burma', 'G9');
+      rubySpec.certified = true;
+      const pallasiteSpec = generateSpecimen('seymchan_pallasite', 'G9');
+
+      state.specimens.push(diamondSpec, rubySpec, pallasiteSpec);
+      state.activeSpecimenId = diamondSpec.id;
+
+      initStrataGrid();
+      populateDossierSelect();
+      renderDossierMaster();
+      updateHeaderStats();
+      renderSpecimenLedger();
+      renderCompendiumGrid();
+      initAllPodiums();
+    });
+  </script>
+</body>
+</html>
