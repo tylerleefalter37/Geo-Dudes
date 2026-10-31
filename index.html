@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Geo Dudes: Field Dossier &amp; Mineral Ledger</title>
   
   <!-- Tailwind CSS CDN -->
@@ -61,6 +61,44 @@
         linear-gradient(to right, rgba(10, 10, 10, 0.035) 1px, transparent 1px),
         linear-gradient(to bottom, rgba(10, 10, 10, 0.035) 1px, transparent 1px);
       background-size: 20px 20px;
+      padding-bottom: env(safe-area-inset-bottom, 1rem);
+      padding-left: env(safe-area-inset-left, 0px);
+      padding-right: env(safe-area-inset-right, 0px);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* iOS Safe Areas for Header */
+    .ios-safe-top {
+      padding-top: calc(0.75rem + env(safe-area-inset-top, 0px));
+      padding-left: calc(1rem + env(safe-area-inset-left, 0px));
+      padding-right: calc(1rem + env(safe-area-inset-right, 0px));
+    }
+
+    /* iOS Safari Form Zoom Prevention: 16px minimum prevents auto-zoom viewport jumping */
+    @media (max-width: 768px) {
+      input[type="text"],
+      input[type="number"],
+      select,
+      textarea {
+        font-size: 16px !important;
+      }
+    }
+
+    /* Touch target comfort for iOS buttons */
+    button, 
+    select,
+    .tab-btn {
+      touch-action: manipulation;
+    }
+
+    @media (max-width: 640px) {
+      button {
+        min-height: 44px;
+      }
+      .stamp-badge {
+        font-size: 0.6rem;
+        padding: 0.2rem 0.4rem;
+      }
     }
 
     /* Stamped Badge Effect */
@@ -95,7 +133,15 @@
       border-color: #0a0a0a;
     }
 
-    /* 8x8 Grid Strata Cells */
+    /* 8x8 Grid Strata Cells - Seamless iOS Fluid Matrix */
+    #strata-grid-container {
+      display: grid;
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+      width: 100%;
+      box-sizing: border-box;
+      touch-action: manipulation;
+    }
+
     .strata-cell {
       aspect-ratio: 1 / 1;
       border: 1px solid #c5bbae;
@@ -106,9 +152,11 @@
       justify-content: center;
       cursor: pointer;
       user-select: none;
+      -webkit-user-select: none;
       transition: all 0.12s ease-in-out;
       position: relative;
       overflow: hidden;
+      font-size: clamp(0.55rem, 2.5vw, 0.85rem);
     }
     .strata-cell:hover:not(.revealed) {
       background-color: #dfd7c5;
@@ -129,6 +177,11 @@
       border: 1px dashed #737373;
     }
 
+    /* iOS Smooth Momentum Scrolling */
+    .ios-scroll-touch {
+      -webkit-overflow-scrolling: touch;
+    }
+
     /* Custom Ledger Scrollbar */
     ::-webkit-scrollbar { width: 5px; height: 5px; }
     ::-webkit-scrollbar-track { background: #ece7db; }
@@ -139,97 +192,97 @@
 
   <!-- ================= ARCHIVAL HEADER & MASTHEAD ================= -->
   <header class="border-b-2 border-ink-950 bg-parchment-25 sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-col md:flex-row md:items-center justify-between gap-3">
+    <div class="max-w-7xl mx-auto ios-safe-top py-3 flex flex-col md:flex-row md:items-center justify-between gap-3">
       
       <!-- Brand & Accession Registry -->
       <div class="flex items-center space-x-3.5">
-        <div class="w-11 h-11 border-2 border-ink-950 bg-parchment-100 flex items-center justify-center font-serif text-2xl font-bold shadow-[2px_2px_0px_#0a0a0a]">
+        <div class="w-11 h-11 border-2 border-ink-950 bg-parchment-100 flex items-center justify-center font-serif text-2xl font-bold shadow-[2px_2px_0px_#0a0a0a] flex-shrink-0">
           &sect;
         </div>
         <div>
           <div class="flex items-center space-x-2">
             <h1 class="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-ink-950 uppercase leading-none">Geo Dudes</h1>
-            <span class="stamp-badge border-ink-950 text-ink-950 bg-parchment-100">Curatorial Ledger Vol. VI</span>
+            <span class="stamp-badge border-ink-950 text-ink-950 bg-parchment-100">Ledger Vol. VI</span>
           </div>
-          <p class="text-[11px] font-mono uppercase tracking-widest text-ink-500 mt-0.5">Field Mineralogist &middot; Archival Dossier &middot; 4-Podium Exchange</p>
+          <p class="text-[10px] sm:text-[11px] font-mono uppercase tracking-widest text-ink-500 mt-0.5">Field Mineralogist &middot; Archival Dossier &middot; 4-Podium Exchange</p>
         </div>
       </div>
 
       <!-- Financial Metrics & Indicators -->
-      <div class="flex flex-wrap items-center gap-2 font-mono text-xs">
-        <div class="px-3 py-1.5 border border-ink-950 bg-parchment-100 flex items-center space-x-2">
-          <span class="text-ink-500 uppercase text-[10px]">Expedition Funds:</span>
-          <span id="stat-funds" class="font-bold text-ink-950 text-sm">$35,000</span>
+      <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 font-mono text-xs">
+        <div class="px-2.5 sm:px-3 py-1.5 border border-ink-950 bg-parchment-100 flex items-center space-x-1.5">
+          <span class="text-ink-500 uppercase text-[9px] sm:text-[10px]">Funds:</span>
+          <span id="stat-funds" class="font-bold text-ink-950 text-xs sm:text-sm">$35,000</span>
         </div>
 
-        <div class="px-3 py-1.5 border border-ink-950 bg-parchment-100 flex items-center space-x-2 cursor-pointer hover:bg-parchment-200 transition" onclick="switchTab('inventory')">
-          <span class="text-ink-500 uppercase text-[10px]">Catalogued:</span>
+        <div class="px-2.5 sm:px-3 py-1.5 border border-ink-950 bg-parchment-100 flex items-center space-x-1.5 cursor-pointer active:bg-parchment-200 transition" onclick="switchTab('inventory')">
+          <span class="text-ink-500 uppercase text-[9px] sm:text-[10px]">Catalog:</span>
           <span id="stat-bag-count" class="font-bold text-ink-950">0</span>
         </div>
 
-        <div class="px-3 py-1.5 border border-ink-950 bg-parchment-100 flex items-center space-x-2 cursor-pointer hover:bg-parchment-200 transition" onclick="switchTab('lab')">
-          <span class="text-ink-500 uppercase text-[10px]">Unopened Geodes:</span>
+        <div class="px-2.5 sm:px-3 py-1.5 border border-ink-950 bg-parchment-100 flex items-center space-x-1.5 cursor-pointer active:bg-parchment-200 transition" onclick="switchTab('lab')">
+          <span class="text-ink-500 uppercase text-[9px] sm:text-[10px]">Geodes:</span>
           <span id="stat-geode-count" class="font-bold text-ink-950">0</span>
         </div>
 
-        <button id="btn-sound" class="px-2.5 py-1.5 border border-ink-950 bg-parchment-100 hover:bg-ink-950 hover:text-parchment-25 font-mono text-xs transition" title="Toggle Sound">
+        <button id="btn-sound" class="px-2.5 py-1.5 border border-ink-950 bg-parchment-100 active:bg-ink-950 active:text-parchment-25 font-mono text-xs transition" title="Toggle Sound">
           [AUDIO: ON]
         </button>
       </div>
 
     </div>
 
-    <!-- Navigation Bar -->
-    <nav class="border-t border-parchment-300 bg-parchment-100 px-4 sm:px-6 overflow-x-auto">
-      <div class="max-w-7xl mx-auto flex space-x-1 py-1.5 text-xs font-mono">
-        <button onclick="switchTab('prospecting')" id="tab-btn-prospecting" class="tab-btn active px-3.5 py-1.5 border border-ink-950 uppercase tracking-wider font-semibold transition">
-          1. Field Strata Grid
+    <!-- Navigation Bar with Touch-Friendly Horizontal Scroll -->
+    <nav class="border-t border-parchment-300 bg-parchment-100 px-3 sm:px-6 overflow-x-auto ios-scroll-touch">
+      <div class="max-w-7xl mx-auto flex space-x-1 py-1.5 text-xs font-mono whitespace-nowrap min-w-max">
+        <button onclick="switchTab('prospecting')" id="tab-btn-prospecting" class="tab-btn active px-3 sm:px-3.5 py-2 sm:py-1.5 border border-ink-950 uppercase tracking-wider font-semibold transition">
+          1. Strata Grid
         </button>
-        <button onclick="switchTab('dossier')" id="tab-btn-dossier" class="tab-btn px-3.5 py-1.5 border border-ink-950 uppercase tracking-wider font-semibold transition">
-          2. Master Specimen Dossier
+        <button onclick="switchTab('dossier')" id="tab-btn-dossier" class="tab-btn px-3 sm:px-3.5 py-2 sm:py-1.5 border border-ink-950 uppercase tracking-wider font-semibold transition">
+          2. Master Dossier
         </button>
-        <button onclick="switchTab('auction')" id="tab-btn-auction" class="tab-btn px-3.5 py-1.5 border border-ink-950 uppercase tracking-wider font-semibold transition">
-          3. 4-Podium Live Exchange
+        <button onclick="switchTab('auction')" id="tab-btn-auction" class="tab-btn px-3 sm:px-3.5 py-2 sm:py-1.5 border border-ink-950 uppercase tracking-wider font-semibold transition">
+          3. 4-Podium Exchange
         </button>
-        <button onclick="switchTab('lab')" id="tab-btn-lab" class="tab-btn px-3.5 py-1.5 border border-ink-950 uppercase tracking-wider font-semibold transition">
-          4. Diagnostic Prep Lab
+        <button onclick="switchTab('lab')" id="tab-btn-lab" class="tab-btn px-3 sm:px-3.5 py-2 sm:py-1.5 border border-ink-950 uppercase tracking-wider font-semibold transition">
+          4. Diagnostic Prep
         </button>
-        <button onclick="switchTab('inventory')" id="tab-btn-inventory" class="tab-btn px-3.5 py-1.5 border border-ink-950 uppercase tracking-wider font-semibold transition">
+        <button onclick="switchTab('inventory')" id="tab-btn-inventory" class="tab-btn px-3 sm:px-3.5 py-2 sm:py-1.5 border border-ink-950 uppercase tracking-wider font-semibold transition">
           5. Specimen Ledger
         </button>
-        <button onclick="switchTab('encyclopedia')" id="tab-btn-encyclopedia" class="tab-btn px-3.5 py-1.5 border border-ink-950 uppercase tracking-wider font-semibold transition">
-          6. Peabody Compendium
+        <button onclick="switchTab('encyclopedia')" id="tab-btn-encyclopedia" class="tab-btn px-3 sm:px-3.5 py-2 sm:py-1.5 border border-ink-950 uppercase tracking-wider font-semibold transition">
+          6. Compendium
         </button>
-        <button onclick="switchTab('godmode')" id="tab-btn-godmode" class="tab-btn px-3.5 py-1.5 border border-archival-red text-archival-red uppercase tracking-wider font-semibold transition ml-auto">
-          [Curatorial Override]
+        <button onclick="switchTab('godmode')" id="tab-btn-godmode" class="tab-btn px-3 sm:px-3.5 py-2 sm:py-1.5 border border-archival-red text-archival-red uppercase tracking-wider font-semibold transition">
+          [Override]
         </button>
       </div>
     </nav>
   </header>
 
   <!-- ================= MAIN VIEWPORT CONTAINER ================= -->
-  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
+  <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-6 lg:p-8 space-y-6">
 
     <!-- 1. FIELD PROSPECTING (8x8 GRID & 50-PICK EXPEDITION QUOTA) -->
-    <section id="panel-prospecting" class="tab-panel space-y-6">
+    <section id="panel-prospecting" class="tab-panel space-y-4 sm:space-y-6">
       
       <!-- Sector Header & Controls -->
-      <div class="paper-card p-6 border-2 border-ink-950">
+      <div class="paper-card p-4 sm:p-6 border-2 border-ink-950">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
-            <div class="flex items-center space-x-2">
-              <span class="stamp-badge border-ink-950 text-ink-950">Geological Survey Sector</span>
+            <div class="flex flex-wrap items-center gap-1.5">
+              <span class="stamp-badge border-ink-950 text-ink-950">Survey Sector</span>
               <span class="text-xs font-mono text-ink-500 uppercase tracking-widest" id="site-tier-badge">Mantle Xenolith &middot; Diatreme Pipe</span>
             </div>
-            <h2 id="site-title" class="font-serif text-3xl sm:text-4xl font-bold text-ink-950 mt-1">Kimberley Diamond Pipe, South Africa</h2>
-            <p id="site-desc" class="text-sm text-ink-700 font-serif italic mt-1 max-w-3xl">
+            <h2 id="site-title" class="font-serif text-2xl sm:text-4xl font-bold text-ink-950 mt-1">Kimberley Diamond Pipe, South Africa</h2>
+            <p id="site-desc" class="text-xs sm:text-sm text-ink-700 font-serif italic mt-1 max-w-3xl">
               Deep mantle-derived volcanic pipe breeched 100km below the continental craton, carrying octahedral diamond crystals, chrome pyrope, and eclogitic nodules.
             </p>
           </div>
 
           <div class="flex flex-col gap-1 w-full lg:w-80 font-mono">
             <label class="text-[10px] uppercase tracking-widest text-ink-500">Select Prospecting Sector:</label>
-            <select id="select-site" onchange="changeSite(this.value)" class="bg-parchment-100 border-2 border-ink-950 text-ink-950 text-xs p-2.5 font-mono focus:outline-none">
+            <select id="select-site" onchange="changeSite(this.value)" class="bg-parchment-100 border-2 border-ink-950 text-ink-950 p-2.5 font-mono focus:outline-none w-full">
               <option value="kimberley">1. Kimberley Diamond Pipe, South Africa (Diamonds, Mantle Xenoliths)</option>
               <option value="mogok">2. Mogok Stone Tract, Myanmar (Pigeon's Blood Ruby, Painite, Spinel)</option>
               <option value="kashmir">3. Zanskar Pegmatites, Kashmir (Cornflower Blue Sapphires)</option>
@@ -245,68 +298,68 @@
         </div>
 
         <!-- 50-PICK EXPEDITION QUOTA STRIP -->
-        <div class="mt-5 pt-4 border-t-2 border-ink-950 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 text-xs font-mono bg-parchment-100 p-3.5 border border-parchment-300">
-          <div class="flex items-center space-x-3">
-            <span class="text-ink-500 uppercase text-[11px] tracking-wider font-semibold">EXPEDITION PICKS REMAINING:</span>
-            <div class="px-3 py-1 bg-ink-950 text-parchment-25 font-bold text-sm tracking-widest border border-ink-950" id="pick-counter-badge">
+        <div class="mt-4 pt-3 border-t-2 border-ink-950 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 text-xs font-mono bg-parchment-100 p-3 border border-parchment-300">
+          <div class="flex items-center space-x-2 sm:space-x-3">
+            <span class="text-ink-500 uppercase text-[10px] sm:text-[11px] tracking-wider font-semibold">EXPEDITION PICKS:</span>
+            <div class="px-2.5 sm:px-3 py-1 bg-ink-950 text-parchment-25 font-bold text-xs sm:text-sm tracking-widest border border-ink-950" id="pick-counter-badge">
               [ 50 / 50 PICKS ]
             </div>
-            <span class="text-[11px] text-ink-500 hidden md:inline">&bull; 14 mystery veins must remain unmined per sector</span>
+            <span class="text-[10px] text-ink-500 hidden md:inline">&bull; 14 mystery veins remain unmined per sector</span>
           </div>
 
-          <div class="flex items-center space-x-2">
-            <button onclick="surveyNewQuadrant()" class="px-3.5 py-1.5 border-2 border-ink-950 bg-parchment-50 hover:bg-parchment-200 text-ink-950 font-bold uppercase transition">
-              &circlearrowright; Survey New Quadrant (50 Picks)
+          <div class="flex items-center gap-2">
+            <button onclick="surveyNewQuadrant()" class="flex-1 sm:flex-none px-3 py-2 border-2 border-ink-950 bg-parchment-50 active:bg-parchment-200 text-ink-950 font-bold uppercase transition text-center text-xs">
+              &circlearrowright; New Quadrant (50 Picks)
             </button>
-            <button onclick="expeditionBlast()" class="px-3.5 py-1.5 border border-ink-950 bg-ink-950 text-parchment-25 font-bold uppercase hover:bg-ink-800 transition" title="Blast 8 remaining tiles without using picks">
-              Field Dynamite ($500)
+            <button onclick="expeditionBlast()" class="px-3 py-2 border border-ink-950 bg-ink-950 text-parchment-25 font-bold uppercase active:bg-ink-800 transition text-xs" title="Blast 8 remaining tiles without using picks">
+              Dynamite ($500)
             </button>
           </div>
         </div>
       </div>
 
       <!-- Excavation Grid & Field Wire -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
         
         <!-- 8x8 Interactive Click Grid (64 Tiles) -->
-        <div class="lg:col-span-7 paper-card p-5 border-2 border-ink-950">
-          <div class="flex items-center justify-between pb-3 border-b border-parchment-300 font-mono text-xs">
+        <div class="lg:col-span-7 paper-card p-3 sm:p-5 border-2 border-ink-950">
+          <div class="flex items-center justify-between pb-2.5 border-b border-parchment-300 font-mono text-xs">
             <div class="flex items-center space-x-2">
-              <span class="stamp-badge border-ink-950 text-ink-950">Quadrant Strata Matrix</span>
-              <span class="text-ink-500 uppercase text-[10px]">8&times;8 Grid &middot; Tap to mine</span>
+              <span class="stamp-badge border-ink-950 text-ink-950">Strata Matrix</span>
+              <span class="text-ink-500 uppercase text-[10px]">8&times;8 Grid &middot; 1-Tap Reveal</span>
             </div>
             <span id="grid-status-label" class="text-[11px] font-bold text-ink-950">50 Picks Left</span>
           </div>
 
-          <!-- The 8x8 Grid Container -->
-          <div id="strata-grid-container" class="mt-4 grid grid-cols-8 gap-1.5 p-2.5 bg-parchment-200 border-2 border-ink-950 shadow-inner">
+          <!-- The 8x8 Grid Container with iOS Optimized Gapping -->
+          <div id="strata-grid-container" class="mt-3 gap-1 sm:gap-1.5 p-1.5 sm:p-2.5 bg-parchment-200 border-2 border-ink-950 shadow-inner">
             <!-- 64 cells generated via script -->
           </div>
 
-          <div class="mt-3 flex items-center justify-between text-[11px] font-mono text-ink-500">
-            <span>&bull; Single-click excavation trigger</span>
+          <div class="mt-2.5 flex items-center justify-between text-[10px] sm:text-[11px] font-mono text-ink-500">
+            <span>&bull; Instant 1-tap harvest</span>
             <span id="strata-unmined-note">14 veins will remain unexcavated when quota ends.</span>
           </div>
         </div>
 
         <!-- Real-Time Field Dispatch Feed -->
-        <div class="lg:col-span-5 paper-card p-5 border-2 border-ink-950 flex flex-col justify-between">
+        <div class="lg:col-span-5 paper-card p-3 sm:p-5 border-2 border-ink-950 flex flex-col justify-between">
           <div>
-            <div class="flex items-center justify-between pb-3 border-b border-parchment-300 font-mono text-xs">
-              <span class="font-bold uppercase tracking-wider text-ink-950">Archival Field Wire</span>
-              <span class="stamp-badge border-ink-950 text-ink-950">Live Telegraph</span>
+            <div class="flex items-center justify-between pb-2.5 border-b border-parchment-300 font-mono text-xs">
+              <span class="font-bold uppercase tracking-wider text-ink-950">Field Telegraph</span>
+              <span class="stamp-badge border-ink-950 text-ink-950">Live Wire</span>
             </div>
 
-            <div id="field-dispatch-feed" class="mt-3 space-y-2.5 max-h-[460px] overflow-y-auto pr-1 text-xs font-mono">
-              <div class="p-2.5 bg-parchment-100 border border-parchment-300 text-ink-700 leading-relaxed">
+            <div id="field-dispatch-feed" class="mt-2.5 space-y-2 max-h-[300px] sm:max-h-[460px] overflow-y-auto ios-scroll-touch pr-1 text-xs font-mono">
+              <div class="p-2 bg-parchment-100 border border-parchment-300 text-ink-700 leading-relaxed text-[11px]">
                 [SURVEY LOG] Expedition started. 50 excavation picks issued for this 8x8 quadrant. Tap strata blocks to strike gems, geodes, or native metals.
               </div>
             </div>
           </div>
 
-          <div class="pt-3 border-t border-parchment-300 flex items-center justify-between font-mono text-xs">
-            <span class="text-ink-500">Latest Extraction:</span>
-            <button onclick="switchTab('dossier')" id="btn-view-latest-dossier" class="font-bold text-ink-950 hover:underline" disabled>
+          <div class="pt-3 border-t border-parchment-300 flex items-center justify-between font-mono text-xs mt-3">
+            <span class="text-ink-500 text-[11px]">Latest Discovery:</span>
+            <button onclick="switchTab('dossier')" id="btn-view-latest-dossier" class="font-bold text-ink-950 hover:underline text-[11px]" disabled>
               Awaiting First Strike &rarr;
             </button>
           </div>
@@ -956,11 +1009,11 @@
   </div>
 
   <!-- MULTI-PODIUM CONSIGNMENT MODAL (BULLETPROOF RESERVE TIERS) -->
-  <div id="modal-consign" class="fixed inset-0 z-50 bg-ink-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="paper-card p-6 max-w-lg w-full border-2 border-ink-950 shadow-[4px_4px_0px_#0a0a0a] bg-parchment-50 font-mono text-xs">
+  <div id="modal-consign" class="fixed inset-0 z-50 bg-ink-950/80 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4">
+    <div class="paper-card p-4 sm:p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto ios-scroll-touch border-2 border-ink-950 shadow-[4px_4px_0px_#0a0a0a] bg-parchment-50 font-mono text-xs">
       <div class="flex items-center justify-between pb-3 border-b border-parchment-300">
         <h3 class="font-serif text-xl font-bold text-ink-950">Consign to Exchange Block</h3>
-        <button onclick="closeMultiPodiumConsignModal()" class="text-ink-500 hover:text-ink-950">[ESC]</button>
+        <button onclick="closeMultiPodiumConsignModal()" class="text-ink-500 hover:text-ink-950 p-2 font-bold">[ESC]</button>
       </div>
 
       <div class="my-4 space-y-3">
@@ -999,12 +1052,48 @@
       </div>
 
       <div class="pt-4 border-t border-parchment-300 flex justify-end space-x-2">
-        <button onclick="closeMultiPodiumConsignModal()" class="px-3 py-1.5 border border-ink-950 bg-parchment-100 hover:bg-parchment-200">
+        <button onclick="closeMultiPodiumConsignModal()" class="px-4 py-2 border border-ink-950 bg-parchment-100 active:bg-parchment-200">
           Cancel
         </button>
-        <button onclick="submitConsignmentModal()" class="px-4 py-1.5 border-2 border-ink-950 bg-ink-950 text-parchment-25 font-bold hover:bg-ink-800">
+        <button onclick="submitConsignmentModal()" class="px-4 py-2 border-2 border-ink-950 bg-ink-950 text-parchment-25 font-bold active:bg-ink-800">
           Mount to Podium &rarr;
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- OFFICIAL CMA CERTIFICATE MODAL -->
+  <div id="modal-cma-cert" class="fixed inset-0 z-50 bg-ink-950/80 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4">
+    <div class="paper-card p-5 sm:p-8 max-w-xl w-full max-h-[90vh] overflow-y-auto ios-scroll-touch border-4 border-ink-950 shadow-[6px_6px_0px_#0a0a0a] relative bg-parchment-50">
+      <div class="border-2 border-dashed border-ink-950 p-4 sm:p-6 text-center">
+        
+        <div class="flex items-center justify-between pb-3 border-b border-parchment-300">
+          <span class="stamp-badge stamp-certified">Official Archival Provenance</span>
+          <span id="cert-serial" class="font-mono text-xs font-bold text-archival-red">CMA-2026-9041</span>
+        </div>
+
+        <h3 class="font-serif text-2xl sm:text-3xl font-bold text-ink-950 mt-3 uppercase">Certificate of Authenticity</h3>
+        <p class="font-serif italic text-xs sm:text-sm text-ink-700 mt-0.5">Certified Mineralogical Authentication &middot; Yale Peabody Register</p>
+
+        <div class="my-4 sm:my-6 text-left font-mono text-xs space-y-2 bg-parchment-100 p-3 sm:p-4 border border-parchment-300">
+          <div><span class="text-ink-500">Specimen Taxon:</span> <strong id="cert-name" class="text-ink-950 text-sm">Kimberlite Octahedral Diamond</strong></div>
+          <div><span class="text-ink-500">Locality Origin:</span> <span id="cert-locality" class="text-ink-900">Kimberley Diatreme Pipe, South Africa</span></div>
+          <div><span class="text-ink-500">Formula &amp; Class:</span> <span id="cert-formula" class="text-ink-900">C (Pure Carbon) &middot; Precious Gemstone</span></div>
+          <div><span class="text-ink-500">Mohs Hardness:</span> <strong id="cert-mohs" class="text-ink-950">10.0 Mohs</strong></div>
+          <div><span class="text-ink-500">Curatorial Grade:</span> <span id="cert-grade" class="stamp-badge border-ink-950 text-ink-950">G10 Museum Grade</span></div>
+        </div>
+
+        <div class="pt-3 border-t border-parchment-300 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div class="text-center sm:text-left font-serif">
+            <div class="text-xs font-bold text-ink-950">Dr. Peabody Vance, F.G.S.</div>
+            <div class="text-[10px] font-mono text-ink-500 uppercase">Keeper of Mineralogy &amp; Meteorites</div>
+          </div>
+
+          <button onclick="closeCmaModal()" class="w-full sm:w-auto px-5 py-2.5 border-2 border-ink-950 bg-ink-950 text-parchment-25 font-mono text-xs font-bold active:bg-ink-800 transition">
+            Close &amp; File Certificate
+          </button>
+        </div>
+
       </div>
     </div>
   </div>
